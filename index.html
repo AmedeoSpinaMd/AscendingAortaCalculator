@@ -125,4 +125,95 @@ function calc() {
 }
 </script>
 </body>
+</html>        <div class="row"><span>Height (cm)</span><input type="number" id="ht" placeholder="190"></div>
+    </div>
+
+    <div class="card">
+        <h2>Symptoms & Genetics</h2>
+        <div class="row">
+            <span>Chest/Back Pain</span>
+            <div class="tg">
+                <button id="b-s1n" class="on" onclick="setS('s1','n')">No</button>
+                <button id="b-s1y" onclick="setS('s1','y')">Yes</button>
+            </div>
+        </div>
+        <div class="row">
+            <span>Syndromic (Marfan/L-D)</span>
+            <div class="tg">
+                <button id="b-g1n" class="on" onclick="setS('g1','n')">No</button>
+                <button id="b-g1y" onclick="setS('g1','y')">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="go" onclick="calc()">Calculate</button>
+
+    <div id="out">
+        <div id="vbox" class="verdict">
+            <div style="font-weight:bold; font-size:16px" id="vtit"></div>
+            <div id="vbod" style="margin-top:5px"></div>
+        </div>
+        <div id="reasons"></div>
+    </div>
+</div>
+
+<script>
+let S = {s1:'n', g1:'n'};
+
+function setS(k, v) {
+    S[k] = v;
+    document.getElementById(`b-${k}n`).className = v==='n'?'on':'';
+    document.getElementById(`b-${k}y`).className = v==='y'?'on-r':'';
+}
+
+function calc() {
+    const d = parseFloat(document.getElementById('diam').value);
+    const h = parseFloat(document.getElementById('ht').value) || 175; // Default height if empty
+    if(!d) return;
+
+    const ahi = (d/10) / (h/100); // Aortic Height Index (cm/m)
+    let level = 0; // 0: No, 1: Urgent
+    let notes = [];
+
+    // --- LOGICA CLINICA RAFFINATA ---
+    // Definiamo un'aorta come "dilatata" se AHI > 2.1 (Soglia cautelativa)
+    const isActuallyDilated = (ahi > 2.1);
+
+    if (S.s1 === 'y') {
+        if (isActuallyDilated) {
+            level = 1;
+            notes.push({c:'dr', t:`Pain + Dilated Aorta (AHI ${ahi.toFixed(2)}): URGENT eval required.`});
+        } else {
+            level = 0;
+            notes.push({c:'dg', t:`Pain reported but Aorta is NORMAL for patient size (AHI ${ahi.toFixed(2)}). Look for other causes.`});
+        }
+    }
+
+    if (d >= 55) {
+        level = 1;
+        notes.push({c:'dr', t:"Diameter ≥ 55mm: Surgical indication (Class I)."});
+    }
+
+    // Display
+    document.getElementById('out').style.display = 'block';
+    const vbox = document.getElementById('vbox');
+    const vtit = document.getElementById('vtit');
+    const vbod = document.getElementById('vbod');
+    
+    if (level === 1) {
+        vbox.className = "verdict v-urg";
+        vtit.innerText = "SURGICAL EVALUATION REQUIRED";
+        vbod.innerText = "Criteria for intervention or urgent assessment met.";
+    } else {
+        vbox.className = "verdict v-no";
+        vtit.innerText = "NO SURGICAL INDICATION";
+        vbod.innerText = "Aorta size is within acceptable limits for this patient.";
+    }
+
+    document.getElementById('reasons').innerHTML = notes.map(n => 
+        `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
+    ).join('');
+}
+</script>
+</body>
 </html>
