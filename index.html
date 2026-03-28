@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>Aorta Ascendente — Indicazione Chirurgica</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111;padding-top: env(safe-area-inset-top);}
+.wrap{max-width:680px;margin:0 auto}
+h1{font-size:17px;margin-bottom:3px}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px 14px;margin-bottom:10px}
+.card h2{font-size:11px;font-weight:bold;text-transform:uppercase;color:#777;letter-spacing:.5px;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:9px;margin-top:0}
+.row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0f0;gap:8px}
+.row:last-child{border-bottom:none}
+.lbl{font-size:13px;flex:1;line-height:1.4}
+small{display:block;font-size:11px;color:#888;margin-top:1px}
+input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radius:4px;font-size:13px;text-align:right}
+.tg{display:flex;gap:4px;flex-shrink:0}
+.tg button{padding:4px 10px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444;min-height:35px}
+.tg button.on  {background:#1a56a8;color:#fff;border-color:#1a56a8}
+.tg button.on-a{background:#b45309;color:#fff;border-color:#b45309}
+.tg button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
+.go{display:block;width:100%;padding:15px;font-size:15px;font-weight:bold;background:#1a56a8;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:2px}
+.go:hover{background:#1447a0}
+#out{display:none;margin-top:14px}
+.verdict{border-radius:8px;padding:13px 15px;margin-bottom:12px;border-left:5px solid}
+.vt{font-size:16px;font-weight:bold;margin-bottom:5px}
+.vb{font-size:13px;line-height:1.7}
+.v-urg {background:#fef2f2;border-color:#991b1b;color:#450a0a}
+.v-si  {background:#fff0f0;border-color:#dc2626;color:#7f1d1d}
+.v-disc{background:#fffbeb;border-color:#d97706;color:#78350f}
+.v-no  {background:#f0fdf4;border-color:#16a34a;color:#14532d}
+.idx3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.ibox{background:#f9f9f9;border:1px solid #ddd;border-radius:6px;padding:9px;text-align:center}
+.ilbl{font-size:11px;color:#888;margin-bottom:2px}
+.ival{font-size:20px;font-weight:bold}
+.icls{font-size:11px;margin-top:2px}
+.badge{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:bold}
+.bl{background:#dcfce7;color:#166534}.bm{background:#fef3c7;color:#92400e}
+.bh{background:#ffedd5;color:#9a3412}.bs{background:#fee2e2;color:#7f1d1d}
+.bok{background:#dcfce7;color:#166534}.bbad{background:#fee2e2;color:#7f1d1d}
+.reasons{background:#f9f9f9;border:1px solid #ddd;border-radius:6px;padding:9px 13px;margin-bottom:8px}
+.rh{font-size:12px;font-weight:bold;margin-bottom:5px}
+.ri{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #eee;font-size:12px;line-height:1.4;align-items:flex-start}
+.ri:last-child{border-bottom:none}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.dr{background:#dc2626}.da{background:#d97706}.dg{background:#16a34a}.db{background:#2563eb}
+.ebox{background:#e0f2fe;border:1px solid #7dd3fc;border-radius:6px;padding:9px 13px;margin-bottom:10px;font-size:13px;display:none}
+.opt-tag{font-size:10px;background:#e5e7eb;color:#555;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:normal}
+.refs{font-size:11px;color:#888;padding-top:7px;border-top:1px solid #eee;margin-top:4px;line-height:1.6}
+.disc{font-size:11px;color:#999;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid #eee;line-height:1.5}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:540px){.grid2{grid-template-columns:1fr}.idx3{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Aneurisma Aorta Ascendente</h1>
+<p class="sub">Indicazione chirurgica &mdash; ACC/AHA 2022 &middot; ESC 2014 &middot; Yale algorithm (Saeyeldin 2019)<br>
+Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze residue.</p>
+
+<div class="grid2">
+<div>
+
+<div class="card">
+<h2>Morfologia aortica</h2>
+<div class="row">
+  <div class="lbl">Diametro ascendente <small>TC/RM leading-edge &mdash; obbligatorio</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="diam" placeholder="48" min="20" max="100">
+    <span style="font-size:12px;color:#888">mm</span>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Altezza paziente <span class="opt-tag">opz.</span><small>per AHI e IAA</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="ht" placeholder="" min="100" max="220">
+    <span style="font-size:12px;color:#888">cm</span>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Peso paziente <span class="opt-tag">opz.</span><small>per ASI</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="wt" placeholder="" min="30" max="200">
+    <span style="font-size:12px;color:#888">kg</span>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Velocita' di crescita <span class="opt-tag">opz.</span><small>da esame seriale &ge;6 mesi fa</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="gr" placeholder="" min="0" max="30" step="0.5">
+    <span style="font-size:12px;color:#888">mm/a</span>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Lunghezza aorta asc. <span class="opt-tag">opz.</span><small>elongazione (normale &lt;13 cm)</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="len" placeholder="" min="5" max="25" step="0.5">
+    <span style="font-size:12px;color:#888">cm</span>
+  </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Valvola aortica</h2>
+<div class="row">
+  <div class="lbl">Morfologia valvolare</div>
+  <div class="tg">
+    <button id="b-tav"  onclick="setV('tav')">TAV</button>
+    <button id="b-bav"  onclick="setV('bav')">BAV</button>
+    <button id="b-vunk" onclick="setV('unk')">Ignoto</button>
+  </div>
+</div>
+<div id="bav-rows" style="display:none">
+  <div class="row">
+    <div class="lbl">Fenotipo BAV <span class="opt-tag">opz.</span><small>root = dilataz. seni di Valsalva prevalente</small></div>
+    <div class="tg">
+      <button id="b-fasc"  onclick="setF('asc')">Ascending</button>
+      <button id="b-froot" onclick="setF('root')">Root</button>
+      <button id="b-funk"  onclick="setF('unk')">Ignoto</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="lbl">Disfunzione valvolare BAV <span class="opt-tag">opz.</span></div>
+    <div class="tg">
+      <button id="b-bdno"  onclick="setD('no')">No</button>
+      <button id="b-bdas"  onclick="setD('as')">AS</button>
+      <button id="b-bdar"  onclick="setD('ar')">AR sev.</button>
+      <button id="b-bdunk" onclick="setD('unk')">Ignoto</button>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+<div>
+
+<div class="card">
+<h2>Sintomi</h2>
+<div class="row">
+  <div class="lbl">Dolore toracico o dorsale</div>
+  <div class="tg">
+    <button id="b-s1n" onclick="set3('s1','n')">No</button>
+    <button id="b-s1y" onclick="set3('s1','y')">Si'</button>
+    <button id="b-s1u" onclick="set3('s1','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Disfagia / raucedine / disfonia</div>
+  <div class="tg">
+    <button id="b-s2n" onclick="set3('s2','n')">No</button>
+    <button id="b-s2y" onclick="set3('s2','y')">Si'</button>
+    <button id="b-s2u" onclick="set3('s2','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Dispnea da compressione tracheale</div>
+  <div class="tg">
+    <button id="b-s3n" onclick="set3('s3','n')">No</button>
+    <button id="b-s3y" onclick="set3('s3','y')">Si'</button>
+    <button id="b-s3u" onclick="set3('s3','u')">Ignoto</button>
+  </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Genetica / Connettivopatie</h2>
+<div class="row">
+  <div class="lbl">Sindrome di Marfan (FBN1)</div>
+  <div class="tg">
+    <button id="b-g1n" onclick="set3('g1','n')">No</button>
+    <button id="b-g1y" onclick="set3('g1','y')">Si'</button>
+    <button id="b-g1u" onclick="set3('g1','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Loeys-Dietz / EDS vascolare</div>
+  <div class="tg">
+    <button id="b-g2n" onclick="set3('g2','n')">No</button>
+    <button id="b-g2y" onclick="set3('g2','y')">Si'</button>
+    <button id="b-g2u" onclick="set3('g2','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">HTAD non-sindromica <small>ACTA2, TGFBR1/2, MYH11...</small></div>
+  <div class="tg">
+    <button id="b-g3n" onclick="set3('g3','n')">No</button>
+    <button id="b-g3y" onclick="set3('g3','y')">Si'</button>
+    <button id="b-g3u" onclick="set3('g3','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Storia familiare dissezione/rottura <small>familiare I grado</small></div>
+  <div class="tg">
+    <button id="b-g4n" onclick="set3('g4','n')">No</button>
+    <button id="b-g4y" onclick="set3('g4','y')">Si'</button>
+    <button id="b-g4u" onclick="set3('g4','u')">Ignoto</button>
+  </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Contesto clinico</h2>
+<div class="row">
+  <div class="lbl">Chirurgia cardiaca gia' pianificata
+    <small>Include: CABG, sostituz. valvolare aortica (TAV e BAV), mitralica, ecc.<br>
+    Abbassa la soglia per sostituzione aortica concomitante a 45 mm (cost-free opportunity, IIa).<br>
+    <span style="color:#b45309">Nota: la sostituzione valvolare aortica in BAV rientra in questo campo; non serve voce separata.</span></small>
+  </div>
+  <div class="tg">
+    <button id="b-c1n" onclick="set3('c1','n')">No</button>
+    <button id="b-c1y" onclick="set3('c1','y')">Si'</button>
+    <button id="b-c1u" onclick="set3('c1','u')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Ipertensione non controllata in terapia</div>
+  <div class="tg">
+    <button id="b-c2n" onclick="set3('c2','n')">No</button>
+    <button id="b-c2y" onclick="set3('c2','y')">Si'</button>
+    <button id="b-c2u" onclick="set3('c2','u')">Ignoto</button>
+  </div>
+</div>
+</div>
+
+</div>
+</div>
+
+<button class="go" onclick="calc()">Calcola raccomandazione</button>
+
+<div id="out">
+  <div class="idx3" style="margin-top:14px">
+    <div class="ibox"><div class="ilbl">AHI (cm/m)</div><div class="ival" id="v-ahi">n/a</div><div class="icls" id="c-ahi"></div></div>
+    <div class="ibox"><div class="ilbl">ASI (cm/m2)</div><div class="ival" id="v-asi">n/a</div><div class="icls" id="c-asi"></div></div>
+    <div class="ibox"><div class="ilbl">IAA (cm2/m)</div><div class="ival" id="v-iaa">n/a</div><div class="icls" id="c-iaa"></div></div>
+  </div>
+  <div class="ebox" id="ebox"></div>
+  <div class="verdict" id="vbox">
+    <div class="vt" id="vtit"></div>
+    <div class="vb" id="vbod"></div>
+  </div>
+  <div class="reasons">
+    <div class="rh">Fattori identificati</div>
+    <div id="flist"></div>
+  </div>
+  <div class="refs" id="refbox"></div>
+  <div class="disc">
+    Strumento di supporto clinico &mdash; non sostituisce il team aortico multidisciplinare.<br>
+    ACC/AHA 2022 &middot; ESC 2014 &middot; Yale Algorithm (Saeyeldin 2019) &middot; Zafar 2018 &middot; Davies 2006 &middot; Svensson 2003
+  </div>
+</div>
+
+</div>
+
+<script>
+var S = {
+  valve:'tav', fen:'n', bd:'no',
+  s1:'n', s2:'n', s3:'n',
+  g1:'n', g2:'n', g3:'n', g4:'n',
+  c1:'n', c2:'n'
+};
+
+function hi(id, cls) {
+  var el = document.getElementById(id);
+  if (el) { el.className = cls; }
+}
+
+function setV(v) {
+  S.valve = v;
+  hi('b-tav',  v === 'tav' ? 'on'   : '');
+  hi('b-bav',  v === 'bav' ? 'on-a' : '');
+  hi('b-vunk', v === 'unk' ? 'on'   : '');
+  document.getElementById('bav-rows').style.display = (v === 'bav') ? 'block' : 'none';
+}
+
+function setF(v) {
+  S.fen = v;
+  hi('b-fasc',  v === 'asc'  ? 'on'   : '');
+  hi('b-froot', v === 'root' ? 'on-a' : '');
+  hi('b-funk',  v === 'unk'  ? 'on'   : '');
+}
+
+function setD(v) {
+  S.bd = v;
+  hi('b-bdno',  v === 'no'  ? 'on'   : '');
+  hi('b-bdas',  v === 'as'  ? 'on-a' : '');
+  hi('b-bdar',  v === 'ar'  ? 'on-r' : '');
+  hi('b-bdunk', v === 'unk' ? 'on'   : '');
+}
+
+function set3(k, v) {
+  S[k] = v;
+  var isDanger = (k === 's1' || k === 'g1' || k === 'g2');
+  hi('b-' + k + 'n', v === 'n' ? 'on' : '');
+  hi('b-' + k + 'y', v === 'y' ? (isDanger ? 'on-r' : 'on-a') : '');
+  hi('b-' + k + 'u', v === 'u' ? 'on' : '');
+}
+
+function bsaFn(h, w) { return Math.sqrt(h * w / 3600); }
+
+function ahiCls(v) {
+  if (v <= 2.43) { return { l:'Basso',    c:'bl', p:'~4%/anno'  }; }
+  if (v <= 3.17) { return { l:'Moderato', c:'bm', p:'~7%/anno'  }; }
+  if (v <= 4.06) { return { l:'Alto',     c:'bh', p:'~12%/anno' }; }
+  return                  { l:'Severo',   c:'bs', p:'~18%/anno' };
+}
+function asiCls(v) {
+  if (v <= 2.05) { return { l:'Basso',    c:'bl', p:'~4%/anno'  }; }
+  if (v <= 2.95) { return { l:'Moderato', c:'bm', p:'~7%/anno'  }; }
+  if (v <= 3.95) { return { l:'Alto',     c:'bh', p:'~12%/anno' }; }
+  return                  { l:'Severo',   c:'bs', p:'~18%/anno' };
+}
+
+function calc() {
+  var diamRaw = document.getElementById('diam').value;
+  if (!diamRaw) { alert('Inserire il diametro aortico.'); return; }
+
+  var diam = parseFloat(diamRaw);
+  var htEl = document.getElementById('ht').value;
+  var wtEl = document.getElementById('wt').value;
+  var grEl = document.getElementById('gr').value;
+  var lnEl = document.getElementById('len').value;
+
+  var h   = htEl ? parseFloat(htEl) : null;
+  var w   = wtEl ? parseFloat(wtEl) : null;
+  var gr  = grEl ? parseFloat(grEl) : null;
+  var len = lnEl ? parseFloat(lnEl) : null;
+
+  var dc = diam / 10;
+  var r  = dc / 2;
+
+  /* indici morfologici */
+  var ahi = null, iaa = null, asiVal = null;
+
+  if (h) {
+    var hm = h / 100;
+    ahi = Math.round(dc / hm * 100) / 100;
+    iaa = Math.round(Math.PI * r * r / hm * 10) / 10;
+    var ac = ahiCls(ahi);
+    document.getElementById('v-ahi').textContent = ahi.toFixed(2);
+    document.getElementById('c-ahi').innerHTML   = '<span class="badge ' + ac.c + '">' + ac.l + '</span> ' + ac.p;
+    document.getElementById('v-iaa').textContent = iaa.toFixed(1);
+    document.getElementById('c-iaa').innerHTML   = iaa >= 10
+      ? '<span class="badge bbad">Anormale &ge;10</span>'
+      : '<span class="badge bok">Normale</span>';
+  } else {
+    document.getElementById('v-ahi').textContent = 'n/a';
+    document.getElementById('c-ahi').innerHTML   = '<small>altezza mancante</small>';
+    document.getElementById('v-iaa').textContent = 'n/a';
+    document.getElementById('c-iaa').innerHTML   = '<small>altezza mancante</small>';
+  }
+
+  if (h && w) {
+    asiVal = Math.round(dc / bsaFn(h, w) * 100) / 100;
+    var asc = asiCls(asiVal);
+    document.getElementById('v-asi').textContent = asiVal.toFixed(2);
+    document.getElementById('c-asi').innerHTML   = '<span class="badge ' + asc.c + '">' + asc.l + '</span> ' + asc.p;
+  } else {
+    document.getElementById('v-asi').textContent = 'n/a';
+    document.getElementById('c-asi').innerHTML   = '<small>altezza/peso mancante</small>';
+  }
+
+  /* elongazione */
+  var ebox = document.getElementById('ebox');
+  var elongated = false;
+  if (len) {
+    elongated = (len >= 13);
+    var lhStr = h ? (Math.round(len / (h / 100) * 100) / 100).toFixed(2) + ' cm/m' : 'n/a';
+    ebox.style.display = 'block';
+    ebox.innerHTML = '<strong>Elongazione:</strong> lunghezza ' + len + ' cm'
+      + (h ? ' &mdash; L/h = ' + lhStr : '')
+      + ' &mdash; '
+      + (elongated ? '<span class="badge bs">Elongata &ge;13 cm</span>' : '<span class="badge bok">Nei limiti</span>')
+      + '<br><small style="color:#555">Soglia: &gt;13 cm assoluta &mdash; ACC/AHA 2022 IIb (Shirali 2020)</small>';
+  } else {
+    ebox.style.display = 'none';
+  }
+
+  /* logica clinica */
+  var BAV    = (S.valve === 'bav');
+  var vUnk   = (S.valve === 'unk');
+  var syn    = (S.g1 === 'y' || S.g2 === 'y' || S.g3 === 'y');
+  var synUnk = (S.g1 === 'u' || S.g2 === 'u' || S.g3 === 'u');
+
+  var factors   = [];
+  var refs      = {};
+  var level     = 0;
+  var uncertain = false;
+
+  function add(lvl, col, txt, ref) {
+    if (lvl > level) { level = lvl; }
+    factors.push({ col: col, txt: txt, ref: ref || '' });
+    if (ref) { refs[ref] = true; }
+  }
+  function info(col, txt, ref) {
+    factors.push({ col: col, txt: txt, ref: ref || '' });
+    if (ref) { refs[ref] = true; }
+  }
+  function unc(txt) {
+    uncertain = true;
+    factors.push({ col: 'b', txt: 'Dato mancante: ' + txt, ref: '' });
+  }
+
+  /* sintomi */
+  if (S.s1 === 'y') { add(3, 'r', 'Dolore toracico/dorsale &mdash; indicazione urgente (I-C)', 'ACC/AHA 2022 I-C'); }
+  if (S.s1 === 'u') { unc('dolore toracico ignoto &mdash; se presente indica urgenza chirurgica'); }
+  if (S.s2 === 'y' || S.s3 === 'y') { add(2, 'r', 'Sintomi compressivi (disfagia/raucedine/dispnea) &mdash; indicazione indipendente dal diametro (I-C)', 'ACC/AHA 2022 I-C'); }
+  if (S.s2 === 'u' || S.s3 === 'u') { unc('sintomi compressivi ignoti &mdash; verificare disfagia, raucedine, dispnea'); }
+
+  /* diametro TAV sporadico */
+  if (!BAV && !syn) {
+    if (dc >= 5.5) {
+      add(2, 'r', 'Diametro ' + diam + ' mm &ge;55 mm &mdash; indicazione classe I (TAV sporadico)', 'ACC/AHA 2022 I-B');
+    } else if (dc >= 5.0) {
+      add(1, 'a', 'Diametro ' + diam + ' mm 50&ndash;55 mm &mdash; chirurgia ragionevole in centri esperti (IIa-B)', 'ACC/AHA 2022 IIa-B');
+    }
+    if (vUnk && dc >= 5.0) { unc('morfologia valvolare ignota: se BAV, soglia scende a 50 mm (I-B)'); }
+    if (synUnk && dc >= 4.5) { unc('stato genetico ignoto: se sindromico, soglia scende a 45 mm (I-C)'); }
+  }
+
+  /* BAV */
+  if (BAV) {
+    if (dc >= 5.0) {
+      add(2, 'r', 'BAV + diametro ' + diam + ' mm &ge;50 mm &mdash; indicazione classe I', 'ACC/AHA 2022 I-B');
+    } else if (dc >= 4.5) {
+      var aggr    = (S.bd === 'ar' || S.fen === 'root' || S.g4 === 'y' || S.c1 === 'y');
+      var aggrUnk = (S.bd === 'unk' || S.fen === 'unk' || S.g4 === 'u' || S.c1 === 'u');
+      if (aggr) {
+        add(2, 'r', 'BAV + diametro 45&ndash;50 mm + fattore aggravante (AR severa / fenotipo root / storia familiare / chirurgia cardiaca pianificata) &mdash; IIa-B', 'ACC/AHA 2022 IIa-B');
+      } else if (aggrUnk) {
+        add(1, 'a', 'BAV + diametro &ge;45 mm &mdash; fattori aggravanti parzialmente ignoti; discussione multidisciplinare raccomandata', 'ACC/AHA 2022');
+        unc('fattori aggravanti BAV non tutti noti (fenotipo, disfunzione, storia familiare, chirurgia pianificata)');
+      } else {
+        add(1, 'a', 'BAV + diametro &ge;45 mm &mdash; nessun fattore aggravante; valutare in follow-up ravvicinato', 'ACC/AHA 2022');
+      }
+    }
+  }
+
+  /* genetica */
+  if (S.g1 === 'y') {
+    if (dc >= 5.0) { add(2, 'r', 'Marfan + diametro &ge;50 mm &mdash; indicazione chirurgica (I-C)', 'ACC/AHA 2022 I-C'); }
+    else if (dc >= 4.5) { add(1, 'a', 'Marfan + diametro 45&ndash;50 mm &mdash; chirurgia ragionevole (IIa)', 'ACC/AHA 2022 IIa'); }
+  }
+  if (S.g2 === 'y' && dc >= 4.5) { add(2, 'r', 'Loeys-Dietz / EDS vascolare + &ge;45 mm &mdash; soglia ribassata (I-C)', 'ACC/AHA 2022 I-C'); }
+  if (S.g3 === 'y' && dc >= 4.5) { add(2, 'r', 'HTAD non-sindromica + &ge;45 mm &mdash; (I-C)', 'ACC/AHA 2022 I-C'); }
+
+  /* crescita */
+  if (gr !== null) {
+    var gTh = (syn || BAV) ? 3 : 5;
+    if (gr >= gTh) {
+      add(2, 'r', 'Crescita rapida: ' + gr + ' mm/anno &ge; soglia ' + gTh + ' mm/anno ' + (BAV || syn ? '(BAV/sindromico)' : '(sporadico)') + ' &mdash; classe I', 'ACC/AHA 2022 I-C');
+    }
+  } else {
+    unc('velocita\' di crescita non disponibile &mdash; eseguire esame seriale a 6 mesi se non recente');
+  }
+
+  /* indici */
+  if (ahi !== null && ahi >= 3.21)     { add(1, 'a', 'AHI = ' + ahi.toFixed(2) + ' cm/m &ge;3.21 &mdash; classe Alto rischio (Zafar 2018; IIb)', 'Zafar 2018'); }
+  if (iaa !== null && iaa >= 10)       { add(1, 'a', 'IAA = ' + iaa.toFixed(1) + ' cm2/m &ge;10 &mdash; Svensson; IIb', 'Svensson 2003'); }
+  if (asiVal !== null && asiVal >= 3.0){ add(1, 'a', 'ASI = ' + asiVal.toFixed(2) + ' cm/m2 &ge;3.00 &mdash; classe Alto rischio (Davies 2006)', 'Davies 2006'); }
+
+  /* informativi */
+  if (S.fen === 'root') { info('a', 'Fenotipo root BAV &mdash; forma piu\' maligna, progressione rapida', 'Verma 2004'); }
+  if (S.bd  === 'ar')   { info('a', 'AR severa su BAV &mdash; rischio di dissezione superiore alla stenosi', 'Verma 2004'); }
+  if (S.g4  === 'y')    { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2014'); }
+  if (elongated)         { info('b', 'Elongazione aortica &ge;13 cm &mdash; predittore indipendente di dissezione (Shirali 2020; IIb)', 'Shirali 2020'); }
+  if (S.c1 === 'y' && dc >= 4.5) { info('b', 'Chirurgia cardiaca pianificata + &ge;45 mm &mdash; sostituzione concomitante raccomandata (IIa)', 'ACC/AHA 2022 IIa'); }
+  if (S.c2 === 'y')     { info('a', 'Ipertensione non controllata &mdash; aumenta wall stress; ottimizzare beta-bloccanti +/- ARBs'); }
+
+  if (factors.length === 0) {
+    info('g', 'Nessun criterio identificato. Follow-up con imaging seriale ogni 6-12 mesi; ottimizzare terapia medica.');
+  }
+
+  /* verdetto */
+  var uncNote = uncertain
+    ? '<br><br><em>Attenzione: alcuni dati sono mancanti (vedere sopra). Raccogliere queste informazioni potrebbe modificare la raccomandazione.</em>'
+    : '';
+
+  var verdicts = [
+    { cls:'v-no',
+      tit:'Indicazione chirurgica: NO',
+      bod:'Nessun criterio maggiore soddisfatto con i dati disponibili. Terapia medica e follow-up imaging seriale (TC/RM ogni 6-12 mesi). Target: PA &lt;130/80 mmHg, FC &lt;60 bpm.' + uncNote },
+    { cls:'v-disc',
+      tit:'Indicazione chirurgica: DA DISCUTERE',
+      bod:'Uno o piu\' fattori aggravanti o indici morfologici elevati presenti. Discussione con team aortico multidisciplinare raccomandata prima di decidere.' + uncNote },
+    { cls:'v-si',
+      tit:'Indicazione chirurgica: SI\'',
+      bod:'Almeno un criterio maggiore soddisfatto. Chirurgia elettiva raccomandata. Evitare sforzi fisici e manovra di Valsalva. Riferire a centro con team aortico dedicato (>=50 sostituzioni/anno).' + uncNote },
+    { cls:'v-urg',
+      tit:'Indicazione chirurgica: URGENTE',
+      bod:'Sintomi presenti o criteri multipli ad alto rischio. Ricovero e valutazione urgente. Restrizione assoluta attivita\' fisica. Monitoraggio continuo pressione arteriosa.' }
+  ];
+
+  var vd   = verdicts[level];
+  var vbox = document.getElementById('vbox');
+  vbox.className = 'verdict ' + vd.cls;
+  document.getElementById('vtit').innerHTML = vd.tit;
+  document.getElementById('vbod').innerHTML = vd.bod;
+
+  var dotMap = { r:'dr', a:'da', g:'dg', b:'db' };
+  var html = '';
+  for (var i = 0; i < factors.length; i++) {
+    var f = factors[i];
+    html += '<div class="ri">'
+      + '<div class="dot ' + (dotMap[f.col] || 'da') + '"></div>'
+      + '<span>' + f.txt
+      + (f.ref ? ' <em style="font-size:11px;color:#888">[' + f.ref + ']</em>' : '')
+      + '</span></div>';
+  }
+  document.getElementById('flist').innerHTML = html;
+
+  var refArr = Object.keys(refs);
+  document.getElementById('refbox').innerHTML = refArr.length
+    ? '<strong>Riferimenti:</strong> ' + refArr.join(' &middot; ')
+    : '';
+
+  var out = document.getElementById('out');
+  out.style.display = 'block';
+  out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.onload = function() {
+  hi('b-tav', 'on');
+  var keys = ['s1','s2','s3','g1','g2','g3','g4','c1','c2'];
+  for (var i = 0; i < keys.length; i++) {
+    hi('b-' + keys[i] + 'n', 'on');
+  }
+  hi('b-fasc', 'on');
+  hi('b-bdno', 'on');
+};
+</script>
+
+</body>
+</html>
