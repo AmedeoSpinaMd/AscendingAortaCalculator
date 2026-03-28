@@ -5,46 +5,152 @@
 <title>AortaCalc Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-<link rel="manifest" href="manifest.json?v=2">
-<link rel="apple-touch-icon" href="https://i.imgur.com/8mN6S4K.png?v=2">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://i.imgur.com/8mN6S4K.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
-    :root {
-        --primary: #1a56a8;
-        --danger: #991b1b;
-        --success: #16a34a;
-        --bg: #f0f2f5;
-    }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1f2937; }
-    
+    :root { --primary: #1a56a8; --danger: #991b1b; --success: #16a34a; --warning: #d97706; --bg: #f0f2f5; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1f2937; }
     header { background: var(--primary); color: white; padding: 20px 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
-    header p { margin: 5px 0 0; font-size: 12px; opacity: 0.8; }
-
-    .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-    
-    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
-    .card h2 { font-size: 11px; text-transform: uppercase; color: #6b7280; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
-
-    .row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
-    .row:not(:last-child) { border-bottom: 1px solid #f9fafb; }
-    
+    header h1 { margin: 0; font-size: 20px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card h2 { font-size: 11px; text-transform: uppercase; color: #6b7280; margin: 0 0 10px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f9fafb; }
     label { font-size: 14px; font-weight: 500; }
-    input { width: 85px; padding: 8px; text-align: right; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; background: #f9fafb; -webkit-appearance: none; }
-    
-    .tg { display: flex; gap: 8px; }
-    .tg button { flex: 1; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; color: #4b5563; }
+    input { width: 75px; padding: 8px; text-align: right; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; }
+    .tg { display: flex; gap: 5px; }
+    .tg button { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 12px; font-weight: 600; }
     .tg button.on { background: var(--primary); color: white; border-color: var(--primary); }
     .tg button.on-r { background: var(--danger); color: white; border-color: var(--danger); }
-
-    .calc-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(26, 86, 168, 0.2); transition: transform 0.1s; margin-top: 5px; }
-    .calc-btn:active { transform: scale(0.98); }
-
-    #out { display: none; margin-top: 20px; animation: fadeIn 0.3s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+    .calc-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    #out { display: none; margin-top: 20px; }
     .verdict { padding: 16px; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid; }
     .v-no { background: #f0fdf4; border-color: var(--success); color: #14532d; }
-    .v-urg
+    .v-urg { background: #fef2f2; border-color: var(--danger); color: #450a0a; }
+    .v-disc { background: #fffbeb; border-color: var(--warning); color: #78350f; }
+    .ri { display: flex; gap: 10px; font-size: 13px; margin-bottom: 6px; align-items: flex-start; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+    .bg-r { background: var(--danger); } .bg-y { background: var(--warning); }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>AortaCalc Pro</h1>
+    <p>ACC/AHA & ESC Guidelines</p>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>Aortic Anatomy</h2>
+        <div class="row"><label>Diameter (mm)</label><input type="number" id="diam" placeholder="39"></div>
+        <div class="row"><label>Growth (mm/year)</label><input type="number" id="gr" value="0"></div>
+        <div class="row"><label>Height (cm)</label><input type="number" id="ht" value="175"></div>
+        <div class="row">
+            <label>Aortic Valve</label>
+            <div class="tg">
+                <button id="v-tav" class="on" onclick="setV('tav')">TAV</button>
+                <button id="v-bav" onclick="setV('bav')">BAV</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Clinical Factors</h2>
+        <div class="row">
+            <label>Chest/Back Pain</label>
+            <div class="tg">
+                <button id="s1-n" class="on" onclick="setS('s1','n')">No</button>
+                <button id="s1-y" onclick="setS('s1','y')">Yes</button>
+            </div>
+        </div>
+        <div class="row">
+            <label>Genetic Syndrome</label>
+            <div class="tg">
+                <button id="g1-n" class="on" onclick="setS('g1','n')">No</button>
+                <button id="g1-y" onclick="setS('g1','y')">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="calc-btn" onclick="calc()">CALCULATE RECOMMENDATION</button>
+
+    <div id="out">
+        <div id="vbox" class="verdict">
+            <div id="vtit" style="font-weight:bold; font-size:16px;"></div>
+            <div id="vbod" style="font-size:14px; margin-top:4px;"></div>
+        </div>
+        <div id="reasons" class="card"></div>
+    </div>
+</div>
+
+<script>
+let state = { valve:'tav', s1:'n', g1:'n' };
+
+function setV(v) { 
+    state.valve = v; 
+    document.getElementById('v-tav').className = v==='tav'?'on':'';
+    document.getElementById('v-bav').className = v==='bav'?'on':'';
+}
+function setS(k, v) { 
+    state[k] = v; 
+    document.getElementById(k+'-n').className = v==='n'?'on':'';
+    document.getElementById(k+'-y').className = v==='y'?'on-r':'';
+}
+
+function calc() {
+    const d = parseFloat(document.getElementById('diam').value);
+    const h = parseFloat(document.getElementById('ht').value) || 175;
+    const gr = parseFloat(document.getElementById('gr').value) || 0;
+    if(!d) return;
+
+    const ahi = (d/10) / (h/100); 
+    let level = 0; // 0: green, 1: yellow, 2: red
+    let notes = [];
+
+    // Security check: Is it actually dilated for this body?
+    const isDilated = (ahi > 2.1 || d >= 40);
+
+    // 1. URGENCY
+    if (state.s1 === 'y') {
+        if (isDilated) { level = 2; notes.push({c:'bg-r', t:`URGENT: Pain + Dilated Aorta (AHI ${ahi.toFixed(2)})`}); }
+        else { notes.push({c:'bg-y', t:"Pain reported but Aorta size is normal for height. Look for other causes."}); }
+    }
+
+    // 2. DIAMETER THRESHOLDS
+    if (d >= 55) { level = 2; notes.push({c:'bg-r', t:"Diameter ≥ 55mm: Class I Indication"}); }
+    else if (d >= 50 && (state.valve === 'bav' || state.g1 === 'y')) {
+        level = 2; notes.push({c:'bg-r', t:`Diameter ≥ 50mm + Risk Factors (${state.valve==='bav'?'BAV':'Genetics'}): Class I`});
+    }
+    else if (d >= 50) { level = Math.max(level, 1); notes.push({c:'bg-y', t:"Diameter 50-54mm: Consider surgery in expert centers (IIa)"}); }
+
+    // 3. GROWTH
+    if (gr >= 5 && isDilated) { level = 2; notes.push({c:'bg-r', t:"Rapid Growth (≥ 5mm/y): Class I Indication"}); }
+
+    // DISPLAY
+    document.getElementById('out').style.display = 'block';
+    const vbox = document.getElementById('vbox');
+    if(level === 2) { 
+        vbox.className = "verdict v-urg"; 
+        document.getElementById('vtit').innerText = "SURGERY RECOMMENDED";
+        document.getElementById('vbod').innerText = "Guidelines support surgical intervention.";
+    } else if(level === 1) {
+        vbox.className = "verdict v-disc";
+        document.getElementById('vtit').innerText = "CONSIDER SURGERY (IIa)";
+        document.getElementById('vbod').innerText = "Discuss in Heart Team. Borderline criteria.";
+    } else {
+        vbox.className = "verdict v-no";
+        document.getElementById('vtit').innerText = "MONITORING / MEDICAL Rx";
+        document.getElementById('vbod').innerText = "Criteria for surgery not met.";
+    }
+
+    document.getElementById('reasons').innerHTML = notes.map(n => 
+        `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
+    ).join('');
+}
+</script>
+</body>
+</html>
