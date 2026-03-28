@@ -2,218 +2,49 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Aorta Calc Pro</title>
+<title>AortaCalc Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+<link rel="manifest" href="manifest.json?v=2">
+<link rel="apple-touch-icon" href="https://i.imgur.com/8mN6S4K.png?v=2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 <style>
-    body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111;}
-    .wrap{max-width:600px;margin:0 auto}
-    .card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;margin-bottom:10px}
-    h1{font-size:18px;margin-bottom:5px}
-    h2{font-size:11px;text-transform:uppercase;color:#777;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:10px}
-    .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9f9f9}
-    input{width:70px;padding:5px;text-align:right;border:1px solid #ccc;border-radius:4px}
-    .tg{display:flex;gap:5px}
-    button{padding:6px 12px;border:1px solid #ccc;border-radius:4px;background:#f0f0f0;cursor:pointer}
-    button.on{background:#1a56a8;color:#fff;border-color:#1a56a8}
-    button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
-    .go{width:100%;padding:15px;background:#1a56a8;color:#fff;border:none;border-radius:8px;font-weight:bold;margin-top:10px}
-    #out{display:none;margin-top:15px}
-    .verdict{padding:15px;border-radius:8px;border-left:5px solid;margin-bottom:10px}
-    .v-no{background:#f0fdf4;border-color:#16a34a;color:#14532d}
-    .v-urg{background:#fef2f2;border-color:#991b1b;color:#450a0a}
-    .ri{display:flex;gap:8px;font-size:12px;margin-top:5px}
-    .dot{width:8px;height:8px;border-radius:50%;margin-top:4px}
-    .dr{background:#991b1b}.dg{background:#16a34a}
-</style>
-</head>
-<body>
-
-<div class="wrap">
-    <h1>Ascending Aorta Calculator</h1>
+    :root {
+        --primary: #1a56a8;
+        --danger: #991b1b;
+        --success: #16a34a;
+        --bg: #f0f2f5;
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1f2937; }
     
-    <div class="card">
-        <h2>Patient Data</h2>
-        <div class="row"><span>Diameter (mm)</span><input type="number" id="diam" placeholder="39"></div>
-        <div class="row"><span>Height (cm)</span><input type="number" id="ht" placeholder="190"></div>
-    </div>
+    header { background: var(--primary); color: white; padding: 20px 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    header h1 { margin: 0; font-size: 20px; letter-spacing: 0.5px; }
+    header p { margin: 5px 0 0; font-size: 12px; opacity: 0.8; }
 
-    <div class="card">
-        <h2>Symptoms & Genetics</h2>
-        <div class="row">
-            <span>Chest/Back Pain</span>
-            <div class="tg">
-                <button id="b-s1n" class="on" onclick="setS('s1','n')">No</button>
-                <button id="b-s1y" onclick="setS('s1','y')">Yes</button>
-            </div>
-        </div>
-        <div class="row">
-            <span>Syndromic (Marfan/L-D)</span>
-            <div class="tg">
-                <button id="b-g1n" class="on" onclick="setS('g1','n')">No</button>
-                <button id="b-g1y" onclick="setS('g1','y')">Yes</button>
-            </div>
-        </div>
-    </div>
-
-    <button class="go" onclick="calc()">Calculate</button>
-
-    <div id="out">
-        <div id="vbox" class="verdict">
-            <div style="font-weight:bold; font-size:16px" id="vtit"></div>
-            <div id="vbod" style="margin-top:5px"></div>
-        </div>
-        <div id="reasons"></div>
-    </div>
-</div>
-
-<script>
-let S = {s1:'n', g1:'n'};
-
-function setS(k, v) {
-    S[k] = v;
-    document.getElementById(`b-${k}n`).className = v==='n'?'on':'';
-    document.getElementById(`b-${k}y`).className = v==='y'?'on-r':'';
-}
-
-function calc() {
-    const d = parseFloat(document.getElementById('diam').value);
-    const h = parseFloat(document.getElementById('ht').value) || 175; // Default height if empty
-    if(!d) return;
-
-    const ahi = (d/10) / (h/100); // Aortic Height Index (cm/m)
-    let level = 0; // 0: No, 1: Urgent
-    let notes = [];
-
-    // --- LOGICA CLINICA RAFFINATA ---
-    // Definiamo un'aorta come "dilatata" se AHI > 2.1 (Soglia cautelativa)
-    const isActuallyDilated = (ahi > 2.1);
-
-    if (S.s1 === 'y') {
-        if (isActuallyDilated) {
-            level = 1;
-            notes.push({c:'dr', t:`Pain + Dilated Aorta (AHI ${ahi.toFixed(2)}): URGENT eval required.`});
-        } else {
-            level = 0;
-            notes.push({c:'dg', t:`Pain reported but Aorta is NORMAL for patient size (AHI ${ahi.toFixed(2)}). Look for other causes.`});
-        }
-    }
-
-    if (d >= 55) {
-        level = 1;
-        notes.push({c:'dr', t:"Diameter ≥ 55mm: Surgical indication (Class I)."});
-    }
-
-    // Display
-    document.getElementById('out').style.display = 'block';
-    const vbox = document.getElementById('vbox');
-    const vtit = document.getElementById('vtit');
-    const vbod = document.getElementById('vbod');
+    .container { max-width: 500px; margin: 0 auto; padding: 15px; }
     
-    if (level === 1) {
-        vbox.className = "verdict v-urg";
-        vtit.innerText = "SURGICAL EVALUATION REQUIRED";
-        vbod.innerText = "Criteria for intervention or urgent assessment met.";
-    } else {
-        vbox.className = "verdict v-no";
-        vtit.innerText = "NO SURGICAL INDICATION";
-        vbod.innerText = "Aorta size is within acceptable limits for this patient.";
-    }
+    .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
+    .card h2 { font-size: 11px; text-transform: uppercase; color: #6b7280; margin: 0 0 12px 0; letter-spacing: 0.05em; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; }
 
-    document.getElementById('reasons').innerHTML = notes.map(n => 
-        `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
-    ).join('');
-}
-</script>
-</body>
-</html>        <div class="row"><span>Height (cm)</span><input type="number" id="ht" placeholder="190"></div>
-    </div>
-
-    <div class="card">
-        <h2>Symptoms & Genetics</h2>
-        <div class="row">
-            <span>Chest/Back Pain</span>
-            <div class="tg">
-                <button id="b-s1n" class="on" onclick="setS('s1','n')">No</button>
-                <button id="b-s1y" onclick="setS('s1','y')">Yes</button>
-            </div>
-        </div>
-        <div class="row">
-            <span>Syndromic (Marfan/L-D)</span>
-            <div class="tg">
-                <button id="b-g1n" class="on" onclick="setS('g1','n')">No</button>
-                <button id="b-g1y" onclick="setS('g1','y')">Yes</button>
-            </div>
-        </div>
-    </div>
-
-    <button class="go" onclick="calc()">Calculate</button>
-
-    <div id="out">
-        <div id="vbox" class="verdict">
-            <div style="font-weight:bold; font-size:16px" id="vtit"></div>
-            <div id="vbod" style="margin-top:5px"></div>
-        </div>
-        <div id="reasons"></div>
-    </div>
-</div>
-
-<script>
-let S = {s1:'n', g1:'n'};
-
-function setS(k, v) {
-    S[k] = v;
-    document.getElementById(`b-${k}n`).className = v==='n'?'on':'';
-    document.getElementById(`b-${k}y`).className = v==='y'?'on-r':'';
-}
-
-function calc() {
-    const d = parseFloat(document.getElementById('diam').value);
-    const h = parseFloat(document.getElementById('ht').value) || 175; // Default height if empty
-    if(!d) return;
-
-    const ahi = (d/10) / (h/100); // Aortic Height Index (cm/m)
-    let level = 0; // 0: No, 1: Urgent
-    let notes = [];
-
-    // --- LOGICA CLINICA RAFFINATA ---
-    // Definiamo un'aorta come "dilatata" se AHI > 2.1 (Soglia cautelativa)
-    const isActuallyDilated = (ahi > 2.1);
-
-    if (S.s1 === 'y') {
-        if (isActuallyDilated) {
-            level = 1;
-            notes.push({c:'dr', t:`Pain + Dilated Aorta (AHI ${ahi.toFixed(2)}): URGENT eval required.`});
-        } else {
-            level = 0;
-            notes.push({c:'dg', t:`Pain reported but Aorta is NORMAL for patient size (AHI ${ahi.toFixed(2)}). Look for other causes.`});
-        }
-    }
-
-    if (d >= 55) {
-        level = 1;
-        notes.push({c:'dr', t:"Diameter ≥ 55mm: Surgical indication (Class I)."});
-    }
-
-    // Display
-    document.getElementById('out').style.display = 'block';
-    const vbox = document.getElementById('vbox');
-    const vtit = document.getElementById('vtit');
-    const vbod = document.getElementById('vbod');
+    .row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+    .row:not(:last-child) { border-bottom: 1px solid #f9fafb; }
     
-    if (level === 1) {
-        vbox.className = "verdict v-urg";
-        vtit.innerText = "SURGICAL EVALUATION REQUIRED";
-        vbod.innerText = "Criteria for intervention or urgent assessment met.";
-    } else {
-        vbox.className = "verdict v-no";
-        vtit.innerText = "NO SURGICAL INDICATION";
-        vbod.innerText = "Aorta size is within acceptable limits for this patient.";
-    }
+    label { font-size: 14px; font-weight: 500; }
+    input { width: 85px; padding: 8px; text-align: right; border: 1px solid #d1d5db; border-radius: 6px; font-size: 15px; background: #f9fafb; -webkit-appearance: none; }
+    
+    .tg { display: flex; gap: 8px; }
+    .tg button { flex: 1; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s; color: #4b5563; }
+    .tg button.on { background: var(--primary); color: white; border-color: var(--primary); }
+    .tg button.on-r { background: var(--danger); color: white; border-color: var(--danger); }
 
-    document.getElementById('reasons').innerHTML = notes.map(n => 
-        `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
-    ).join('');
-}
-</script>
-</body>
-</html>
+    .calc-btn { width: 100%; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(26, 86, 168, 0.2); transition: transform 0.1s; margin-top: 5px; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    #out { display: none; margin-top: 20px; animation: fadeIn 0.3s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .verdict { padding: 16px; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid; }
+    .v-no { background: #f0fdf4; border-color: var(--success); color: #14532d; }
+    .v-urg
