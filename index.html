@@ -1,162 +1,212 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ascending Aorta Calculator</title>
-    <style>
-        :root { --primary: #2d55a2; --danger: #b91c1c; --success: #15803d; --warning: #d97706; --bg: #f8fafc; }
-        * { box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1e293b; }
-        header { background: var(--primary); color: white; padding: 25px 10px; text-align: center; }
-        header h1 { margin: 0; font-size: 24px; font-weight: 700; }
-        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
-        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-        .card h2 { font-size: 11px; text-transform: uppercase; color: #64748b; margin: 0 0 12px 0; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
-        .row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f8fafc; }
-        .row:last-child { border-bottom: none; }
-        label { font-size: 14px; font-weight: 600; }
-        input { width: 85px; padding: 8px; text-align: right; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; }
-        .tg { display: flex; gap: 5px; }
-        .tg button { padding: 8px 15px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; font-size: 13px; font-weight: 700; cursor: pointer; }
-        .tg button.on { background: var(--primary); color: white; border-color: var(--primary); }
-        .tg button.on-r { background: var(--danger); color: white; border-color: var(--danger); }
-        .calc-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        #out { display: none; margin-top: 20px; }
-        .verdict { padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 8px solid; }
-        .v-no { background: #f0fdf4; border-color: var(--success); color: #14532d; }
-        .v-urg { background: #fef2f2; border-color: var(--danger); color: #450a0a; }
-        .v-prog { background: #fffbeb; border-color: var(--warning); color: #78350f; }
-        .v-tit { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
-        .reasons { background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        .ri { display: flex; gap: 10px; font-size: 13px; margin-bottom: 8px; line-height: 1.4; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-        .bg-r { background: var(--danger); } .bg-y { background: var(--warning); } .bg-g { background: var(--success); }
-    </style>
+<meta charset="UTF-8">
+<title>Aneurisma Aorta Ascendente - Calcolatore Professionale</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+<style>
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111;padding-top: env(safe-area-inset-top);}
+.wrap{max-width:680px;margin:0 auto}
+h1{font-size:18px;margin-bottom:3px;color:#1a56a8}
+.sub{font-size:12px;color:#666;margin-bottom:14px}
+.card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px 14px;margin-bottom:10px;box-shadow: 0 1px 3px rgba(0,0,0,0.05)}
+.card h2{font-size:11px;font-weight:bold;text-transform:uppercase;color:#777;letter-spacing:.5px;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:9px;margin-top:0}
+.row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0;gap:8px}
+.row:last-child{border-bottom:none}
+.lbl{font-size:13px;flex:1;line-height:1.4;font-weight:600}
+small{display:block;font-size:11px;color:#888;font-weight:normal}
+input[type=number]{width:80px;padding:6px;border:1px solid #bbb;border-radius:4px;font-size:14px;text-align:right;background:#fcfcfc}
+.tg{display:flex;gap:4px;flex-shrink:0}
+.tg button{padding:6px 12px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444;min-height:35px;font-weight:600}
+.tg button.on {background:#1a56a8;color:#fff;border-color:#1a56a8}
+.tg button.on-a{background:#b45309;color:#fff;border-color:#b45309}
+.tg button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
+.go{display:block;width:100%;padding:18px;font-size:16px;font-weight:bold;background:#1a56a8;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:15px;box-shadow: 0 4px 6px rgba(0,0,0,0.1)}
+#out{display:none;margin-top:20px}
+.verdict{border-radius:8px;padding:15px;margin-bottom:15px;border-left:6px solid}
+.v-urg {background:#fef2f2;border-color:#991b1b;color:#450a0a}
+.v-si {background:#fff0f0;border-color:#dc2626;color:#7f1d1d}
+.v-disc{background:#fffbeb;border-color:#d97706;color:#78350f}
+.v-no {background:#f0fdf4;border-color:#16a34a;color:#14532d}
+.vt{font-size:17px;font-weight:bold;margin-bottom:5px;text-transform:uppercase}
+.vb{font-size:14px;line-height:1.6}
+.idx3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+.ibox{background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px;text-align:center}
+.ilbl{font-size:10px;color:#888;text-transform:uppercase}
+.ival{font-size:18px;font-weight:bold;margin:2px 0}
+.badge{padding:2px 6px;border-radius:10px;font-size:10px;font-weight:bold;color:#fff}
+.bg-r{background:#dc2626} .bg-y{background:#d97706} .bg-g{background:#16a34a}
+.reasons{background:#fff;border:1px solid #ddd;border-radius:8px;padding:15px}
+.ri{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid #eee;font-size:13px;align-items:flex-start}
+.dot{width:10px;height:10px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}.idx3{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-    <header><h1>Ascending Aorta Calculator</h1></header>
-    <div class="container">
+<div class="wrap">
+
+<h1>Aneurisma Aorta Ascendente</h1>
+<p class="sub">Algoritmo Clinico Integrato (ACC/AHA 2022 & ESC)</p>
+
+<div class="grid2">
+    <div>
         <div class="card">
-            <h2>PATIENT DATA</h2>
-            <div class="row"><label>Diameter (mm)</label><input type="number" id="diam" placeholder="39"></div>
-            <div class="row"><label>Height (cm)</label><input type="number" id="ht" value="190"></div>
-            <div class="row"><label>Length (mm)</label><input type="number" id="len" placeholder="es. 115"></div>
-            <div class="row"><label>Growth (mm/y)</label><input type="number" id="gr" value="0"></div>
+            <h2>Dati Anatomici</h2>
+            <div class="row"><div class="lbl">Diametro (mm)</div><input type="number" id="diam" placeholder="45"></div>
+            <div class="row"><div class="lbl">Altezza (cm)</div><input type="number" id="ht" value="175"></div>
+            <div class="row"><div class="lbl">Lunghezza (cm)<small>Elongazione (normale <13)</small></div><input type="number" id="len" placeholder="11"></div>
+            <div class="row"><div class="lbl">Crescita (mm/anno)</div><input type="number" id="gr" value="0"></div>
             <div class="row">
-                <label>Valve Type</label>
+                <div class="lbl">Valvola</div>
                 <div class="tg">
-                    <button id="v-tav" class="on" onclick="setV('tav')">TAV</button>
-                    <button id="v-bav" onclick="setV('bav')">BAV</button>
+                    <button id="b-tav" class="on" onclick="setV('tav')">TAV</button>
+                    <button id="b-bav" onclick="setV('bav')">BAV</button>
                 </div>
             </div>
-        </div>
-
-        <div class="card">
-            <h2>SYMPTOMS & GENETICS</h2>
-            <div class="row">
-                <label>Chest/Back Pain</label>
-                <div class="tg">
-                    <button id="s1-n" class="on" onclick="setS('s1','n')">No</button>
-                    <button id="s1-y" onclick="setS('s1','y')">Yes</button>
-                </div>
-            </div>
-            <div class="row">
-                <label>Syndromic (Marfan/L-D)</label>
-                <div class="tg">
-                    <button id="g1-n" class="on" onclick="setS('g1','n')">No</button>
-                    <button id="g1-y" onclick="setS('g1','y')">Yes</button>
-                </div>
-            </div>
-        </div>
-
-        <button class="calc-btn" onclick="calc()">Calculate Result</button>
-
-        <div id="out">
-            <div id="vbox" class="verdict">
-                <div id="vtit" class="v-tit"></div>
-                <div id="vbod" style="font-size:14px;"></div>
-            </div>
-            <div id="reasons" class="reasons"></div>
         </div>
     </div>
 
-    <script>
-        let state = { valve:'tav', s1:'n', g1:'n' };
-        function setV(v) { 
-            state.valve = v; 
-            document.getElementById('v-tav').className = v==='tav'?'on':'';
-            document.getElementById('v-bav').className = v==='bav'?'on':'';
+    <div>
+        <div class="card">
+            <h2>Clinica e Rischio</h2>
+            <div class="row">
+                <div class="lbl">Dolore Toracico/Dorso</div>
+                <div class="tg">
+                    <button id="b-s1n" class="on" onclick="set3('s1','n')">No</button>
+                    <button id="b-s1y" onclick="set3('s1','y')">Sì</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="lbl">Sindrome Genetica</div>
+                <div class="tg">
+                    <button id="b-g1n" class="on" onclick="set3('g1','n')">No</button>
+                    <button id="b-g1y" onclick="set3('g1','y')">Sì</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="lbl">Chirurgia Programmata<small>Concomitante (es. CABG/Valvolare)</small></div>
+                <div class="tg">
+                    <button id="b-c1n" class="on" onclick="set3('c1','n')">No</button>
+                    <button id="b-c1y" onclick="set3('c1','y')">Sì</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button class="go" onclick="calc()">CALCOLA INDICAZIONE</button>
+
+<div id="out">
+    <div class="idx3">
+        <div class="ibox"><div class="ilbl">AHI (cm/m)</div><div class="ival" id="v-ahi">-</div></div>
+        <div class="ibox"><div class="ilbl">Lunghezza</div><div class="ival" id="v-len">-</div></div>
+        <div class="ibox"><div class="ilbl">Crescita</div><div class="ival" id="v-gr">-</div></div>
+    </div>
+    
+    <div id="vbox" class="verdict">
+        <div id="vtit" class="vt"></div>
+        <div id="vbod" class="vb"></div>
+    </div>
+
+    <div class="reasons">
+        <div style="font-weight:bold;margin-bottom:10px">Fattori Rilevati:</div>
+        <div id="flist"></div>
+    </div>
+</div>
+
+</div>
+
+<script>
+var S = { valve:'tav', s1:'n', g1:'n', c1:'n' };
+
+function setV(v) {
+    S.valve = v;
+    document.getElementById('b-tav').className = (v==='tav'?'on':'');
+    document.getElementById('b-bav').className = (v==='bav'?'on-a':'');
+}
+
+function set3(k, v) {
+    S[k] = v;
+    document.getElementById('b-'+k+'n').className = (v==='n'?'on':'');
+    document.getElementById('b-'+k+'y').className = (v==='y'?(k==='s1'?'on-r':'on-a'):'');
+}
+
+function calc() {
+    let d = parseFloat(document.getElementById('diam').value);
+    let h = parseFloat(document.getElementById('ht').value) || 175;
+    let l = parseFloat(document.getElementById('len').value) || 0;
+    let gr = parseFloat(document.getElementById('gr').value) || 0;
+    
+    if(!d) { alert("Inserire il diametro"); return; }
+
+    let ahi = (d/10)/(h/100);
+    document.getElementById('v-ahi').innerText = ahi.toFixed(2);
+    document.getElementById('v-len').innerText = l > 0 ? l + " cm" : "-";
+    document.getElementById('v-gr').innerText = gr + " mm/a";
+
+    let level = 0; // 0: No, 1: Discutere, 2: Sì (Programmata), 3: Urgenza
+    let factors = [];
+
+    // Logica Urgenza
+    if(S.s1 === 'y') {
+        if(d >= 40 || ahi > 2.2) {
+            level = 3;
+            factors.push({c:'bg-r', t:'DOLORE ACUTO: Sospetta Sindrome Aortica Acuta su aorta dilatata.'});
+        } else {
+            factors.push({c:'bg-y', t:'Dolore presente ma diametro nei limiti. Valutare altre diagnosi.'});
         }
-        function setS(k, v) { 
-            state[k] = v; 
-            document.getElementById(k+'-n').className = v==='n'?'on':'';
-            document.getElementById(k+'-y').className = v==='y'?'on-r':'';
-        }
+    }
 
-        function calc() {
-            const d = parseFloat(document.getElementById('diam').value);
-            const h = parseFloat(document.getElementById('ht').value) || 175;
-            const l = parseFloat(document.getElementById('len').value) || 0;
-            const gr = parseFloat(document.getElementById('gr').value) || 0;
-            if(!d) return;
+    // Logica Chirurgia Programmata (Diametri)
+    if(d >= 55) {
+        level = Math.max(level, 2);
+        factors.push({c:'bg-r', t:'Diametro ≥ 55mm: Indicazione Classe I (TAV).'});
+    } else if(d >= 50 && (S.valve === 'bav' || S.g1 === 'y')) {
+        level = Math.max(level, 2);
+        factors.push({c:'bg-r', t:'Diametro ≥ 50mm con BAV o Genetica: Indicazione Classe I.'});
+    } else if(d >= 45 && S.c1 === 'y') {
+        level = Math.max(level, 2);
+        factors.push({c:'bg-y', t:'Diametro ≥ 45mm con Chirurgia Cardiaca concomitante: Indicazione IIa.'});
+    }
 
-            const ahi = (d/10) / (h/100); 
-            let level = 0; // 0: Monitor, 1: Programmata, 2: Urgente
-            let notes = [];
+    // Crescita e Allungamento
+    if(gr >= 5) {
+        level = Math.max(level, 2);
+        factors.push({c:'bg-r', t:'Crescita rapida (≥ 5mm/anno): Indicazione chirurgica.'});
+    }
+    if(l >= 13) {
+        level = Math.max(level, 1);
+        factors.push({c:'bg-y', t:'Elongazione Severa (≥ 13cm): Aumentato rischio di dissezione.'});
+    }
 
-            // Sicurezza per pazienti alti (es. 190cm/39mm)
-            const isActuallyDilated = (ahi > 2.2 || d >= 40);
+    // Visualizzazione
+    let out = document.getElementById('out');
+    let vbox = document.getElementById('vbox');
+    out.style.display = 'block';
 
-            // 1. URGENZA
-            if (state.s1 === 'y') {
-                if (isActuallyDilated) {
-                    level = 2;
-                    notes.push({c:'bg-r', t:"URGENT: Acute pain on dilated aorta (AHI " + ahi.toFixed(2) + ")."});
-                } else {
-                    notes.push({c:'bg-y', t:"Pain with normal aorta for height. Investigate other causes."});
-                }
-            }
+    if(level === 3) {
+        vbox.className = "verdict v-urg";
+        document.getElementById('vtit').innerText = "CHIRURGIA URGENTE";
+        document.getElementById('vbod').innerText = "Segni di instabilità o sospetta dissezione. Ricovero immediato.";
+    } else if(level === 2) {
+        vbox.className = "verdict v-si";
+        document.getElementById('vtit').innerText = "CHIRURGIA PROGRAMMATA";
+        document.getElementById('vbod').innerText = "Criteri per intervento elettivo soddisfatti secondo linee guida.";
+    } else if(level === 1) {
+        vbox.className = "verdict v-disc";
+        document.getElementById('vtit').innerText = "VALUTAZIONE HEART TEAM";
+        document.getElementById('vbod').innerText = "Fattori di rischio presenti. Chirurgia da discutere in base al centro.";
+    } else {
+        vbox.className = "verdict v-no";
+        document.getElementById('vtit').innerText = "MONITORAGGIO";
+        document.getElementById('vbod').innerText = "Dimensioni stabili. Follow-up imaging a 6-12 mesi.";
+    }
 
-            // 2. CHIRURGIA PROGRAMMATA
-            if (d >= 55) {
-                level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:"Diameter ≥ 55mm: Class I Indication."});
-            } else if (d >= 50 && (state.valve === 'bav' || state.g1 === 'y')) {
-                level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:"Diameter ≥ 50mm + BAV/Genetic: Surgery recommended."});
-            }
-
-            // 3. LUNGHEZZA / ALLUNGAMENTO
-            if (l >= 110 && d >= 40) {
-                notes.push({c:'bg-y', t:"Significant elongation (" + l + "mm). Increased risk factor."});
-            }
-
-            // 4. CRESCITA
-            if (gr >= 5 && isActuallyDilated) {
-                level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:"Rapid Growth (≥ 5mm/y): Surgery indicated."});
-            }
-
-            // UI OUTPUT
-            document.getElementById('out').style.display = 'block';
-            const vbox = document.getElementById('vbox');
-            if (level === 2) {
-                vbox.className = "verdict v-urg";
-                document.getElementById('vtit').innerText = "URGENT EVALUATION";
-                document.getElementById('vbod').innerText = "Clinical findings suggest acute aortic syndrome.";
-            } else if (level === 1) {
-                vbox.className = "verdict v-prog";
-                document.getElementById('vtit').innerText = "PLANNED SURGERY";
-                document.getElementById('vbod').innerText = "Thresholds for elective surgery are met.";
-            } else {
-                vbox.className = "verdict v-no";
-                document.getElementById('vtit').innerText = "MONITORING";
-                document.getElementById('vbod').innerText = "Dimensions within safe limits for this patient.";
-            }
-            document.getElementById('reasons').innerHTML = notes.map(n => `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`).join('');
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-        }
-    </script>
+    document.getElementById('flist').innerHTML = factors.map(f => `<div class="ri"><div class="dot ${f.c}"></div><span>${f.t}</span></div>`).join('');
+    out.scrollIntoView({behavior:'smooth'});
+}
+</script>
 </body>
 </html>
