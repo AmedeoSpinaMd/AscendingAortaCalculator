@@ -3,19 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Aorta Ascendente — Indicazione Chirurgica</title>
-
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
-
 <style>
-body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111;padding-top: env(safe-area-inset-top);}
+body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111}
 .wrap{max-width:680px;margin:0 auto}
 h1{font-size:17px;margin-bottom:3px}
 .sub{font-size:12px;color:#666;margin-bottom:14px}
@@ -27,11 +16,11 @@ h1{font-size:17px;margin-bottom:3px}
 small{display:block;font-size:11px;color:#888;margin-top:1px}
 input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radius:4px;font-size:13px;text-align:right}
 .tg{display:flex;gap:4px;flex-shrink:0}
-.tg button{padding:4px 10px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444;min-height:35px}
+.tg button{padding:4px 10px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444}
 .tg button.on  {background:#1a56a8;color:#fff;border-color:#1a56a8}
 .tg button.on-a{background:#b45309;color:#fff;border-color:#b45309}
 .tg button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
-.go{display:block;width:100%;padding:15px;font-size:15px;font-weight:bold;background:#1a56a8;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:2px}
+.go{display:block;width:100%;padding:11px;font-size:15px;font-weight:bold;background:#1a56a8;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:2px}
 .go:hover{background:#1447a0}
 #out{display:none;margin-top:14px}
 .verdict{border-radius:8px;padding:13px 15px;margin-bottom:12px;border-left:5px solid}
@@ -531,6 +520,7 @@ function calc() {
   out.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+/* precompilazione al caricamento */
 window.onload = function() {
   hi('b-tav', 'on');
   var keys = ['s1','s2','s3','g1','g2','g3','g4','c1','c2'];
