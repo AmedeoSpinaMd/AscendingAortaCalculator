@@ -2,82 +2,49 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>AortaCalc Pro - Algoritmo Completo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ascending Aorta Calculator</title>
     <style>
-        :root { --primary: #1a56a8; --danger: #991b1b; --success: #16a34a; --warning: #d97706; --bg: #f0f2f5; }
+        :root { --primary: #2d55a2; --danger: #b91c1c; --success: #15803d; --warning: #d97706; --bg: #f8fafc; }
         * { box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1f2937; }
-        
-        header { background: var(--primary); color: white; padding: 25px 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 22px; font-weight: 700; }
-        header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
-
-        .container { max-width: 500px; margin: 0 auto; padding: 20px 15px; }
-        
-        .card { background: white; border-radius: 12px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
-        .card h2 { font-size: 11px; text-transform: uppercase; color: #6b7280; margin: 0 0 15px 0; border-bottom: 1px solid #f3f4f6; padding-bottom: 8px; letter-spacing: 0.5px; }
-
-        .row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9fafb; gap: 10px; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 0; color: #1e293b; }
+        header { background: var(--primary); color: white; padding: 25px 10px; text-align: center; }
+        header h1 { margin: 0; font-size: 24px; font-weight: 700; }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .card h2 { font-size: 11px; text-transform: uppercase; color: #64748b; margin: 0 0 12px 0; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; }
+        .row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f8fafc; }
         .row:last-child { border-bottom: none; }
-        
-        label { font-size: 14px; font-weight: 600; color: #374151; flex: 1; }
-        input { width: 85px; padding: 10px; text-align: right; border: 1px solid #d1d5db; border-radius: 8px; font-size: 16px; background: #f9fafb; outline: none; }
-        
-        .tg { display: flex; gap: 6px; }
-        .tg button { padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; background: white; font-size: 13px; font-weight: 700; cursor: pointer; color: #4b5563; transition: all 0.2s; }
+        label { font-size: 14px; font-weight: 600; }
+        input { width: 85px; padding: 8px; text-align: right; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px; }
+        .tg { display: flex; gap: 5px; }
+        .tg button { padding: 8px 15px; border: 1px solid #cbd5e1; border-radius: 6px; background: white; font-size: 13px; font-weight: 700; cursor: pointer; }
         .tg button.on { background: var(--primary); color: white; border-color: var(--primary); }
         .tg button.on-r { background: var(--danger); color: white; border-color: var(--danger); }
-
-        .calc-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(26, 86, 168, 0.25); margin-top: 10px; }
-        .calc-btn:active { transform: scale(0.98); }
-
-        #out { display: none; margin-top: 25px; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .verdict { padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 8px solid; }
+        .calc-btn { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        #out { display: none; margin-top: 20px; }
+        .verdict { padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 8px solid; }
         .v-no { background: #f0fdf4; border-color: var(--success); color: #14532d; }
         .v-urg { background: #fef2f2; border-color: var(--danger); color: #450a0a; }
         .v-prog { background: #fffbeb; border-color: var(--warning); color: #78350f; }
-
-        .v-tit { font-size: 18px; font-weight: 800; margin-bottom: 6px; text-transform: uppercase; }
-        .v-bod { font-size: 15px; line-height: 1.5; }
-
-        .reasons { background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #e5e7eb; }
-        .ri { display: flex; gap: 12px; font-size: 14px; margin-bottom: 10px; align-items: flex-start; line-height: 1.4; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-        .bg-r { background: var(--danger); } 
-        .bg-y { background: var(--warning); }
-        .bg-g { background: var(--success); }
+        .v-tit { font-size: 18px; font-weight: 800; margin-bottom: 5px; }
+        .reasons { background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .ri { display: flex; gap: 10px; font-size: 13px; margin-bottom: 8px; line-height: 1.4; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+        .bg-r { background: var(--danger); } .bg-y { background: var(--warning); } .bg-g { background: var(--success); }
     </style>
 </head>
 <body>
-    <header>
-        <h1>AortaCalc Pro</h1>
-        <p>Supporto Decisionale Cardiochirurgico</p>
-    </header>
-    
+    <header><h1>Ascending Aorta Calculator</h1></header>
     <div class="container">
         <div class="card">
-            <h2>Parametri Radiologici</h2>
+            <h2>PATIENT DATA</h2>
+            <div class="row"><label>Diameter (mm)</label><input type="number" id="diam" placeholder="39"></div>
+            <div class="row"><label>Height (cm)</label><input type="number" id="ht" value="190"></div>
+            <div class="row"><label>Length (mm)</label><input type="number" id="len" placeholder="es. 115"></div>
+            <div class="row"><label>Growth (mm/y)</label><input type="number" id="gr" value="0"></div>
             <div class="row">
-                <label>Diametro Max (mm)</label>
-                <input type="number" id="diam" placeholder="0">
-            </div>
-            <div class="row">
-                <label>Lunghezza (Elongazione) (mm)</label>
-                <input type="number" id="len" value="110">
-            </div>
-            <div class="row">
-                <label>Altezza Paziente (cm)</label>
-                <input type="number" id="ht" value="175">
-            </div>
-            <div class="row">
-                <label>Crescita (mm/anno)</label>
-                <input type="number" id="gr" value="0">
-            </div>
-            <div class="row">
-                <label>Morfologia Valvola</label>
+                <label>Valve Type</label>
                 <div class="tg">
                     <button id="v-tav" class="on" onclick="setV('tav')">TAV</button>
                     <button id="v-bav" onclick="setV('bav')">BAV</button>
@@ -86,29 +53,29 @@
         </div>
 
         <div class="card">
-            <h2>Quadro Clinico e Genetica</h2>
+            <h2>SYMPTOMS & GENETICS</h2>
             <div class="row">
-                <label>Dolore Acuto (Torace/Dorso)</label>
+                <label>Chest/Back Pain</label>
                 <div class="tg">
                     <button id="s1-n" class="on" onclick="setS('s1','n')">No</button>
-                    <button id="s1-y" onclick="setS('s1','y')">Sì</button>
+                    <button id="s1-y" onclick="setS('s1','y')">Yes</button>
                 </div>
             </div>
             <div class="row">
-                <label>Sindrome (Marfan, L-D, VEDS)</label>
+                <label>Syndromic (Marfan/L-D)</label>
                 <div class="tg">
                     <button id="g1-n" class="on" onclick="setS('g1','n')">No</button>
-                    <button id="g1-y" onclick="setS('g1','y')">Sì</button>
+                    <button id="g1-y" onclick="setS('g1','y')">Yes</button>
                 </div>
             </div>
         </div>
 
-        <button class="calc-btn" onclick="calc()">ANALIZZA CASO</button>
+        <button class="calc-btn" onclick="calc()">Calculate Result</button>
 
         <div id="out">
             <div id="vbox" class="verdict">
                 <div id="vtit" class="v-tit"></div>
-                <div id="vbod" class="v-bod"></div>
+                <div id="vbod" style="font-size:14px;"></div>
             </div>
             <div id="reasons" class="reasons"></div>
         </div>
@@ -116,13 +83,11 @@
 
     <script>
         let state = { valve:'tav', s1:'n', g1:'n' };
-
         function setV(v) { 
             state.valve = v; 
             document.getElementById('v-tav').className = v==='tav'?'on':'';
             document.getElementById('v-bav').className = v==='bav'?'on':'';
         }
-
         function setS(k, v) { 
             state[k] = v; 
             document.getElementById(k+'-n').className = v==='n'?'on':'';
@@ -134,72 +99,62 @@
             const h = parseFloat(document.getElementById('ht').value) || 175;
             const l = parseFloat(document.getElementById('len').value) || 0;
             const gr = parseFloat(document.getElementById('gr').value) || 0;
-            if(!d) { alert("Inserire il diametro"); return; }
-            
+            if(!d) return;
+
             const ahi = (d/10) / (h/100); 
-            let level = 0; // 0: Verde, 1: Programmata, 2: Urgenza
+            let level = 0; // 0: Monitor, 1: Programmata, 2: Urgente
             let notes = [];
 
-            // 1. ANALISI URGENZA (Dolore + Dilatazione Reale)
-            const isDilated = (ahi > 2.2 || d >= 40);
+            // Sicurezza per pazienti alti (es. 190cm/39mm)
+            const isActuallyDilated = (ahi > 2.2 || d >= 40);
+
+            // 1. URGENZA
             if (state.s1 === 'y') {
-                if (isDilated) { 
-                    level = 2; 
-                    notes.push({c:'bg-r', t:`SOSPETTA SAA: Dolore acuto su aorta dilatata (AHI ${ahi.toFixed(2)}). Richiesta Angio-TC.`}); 
-                } else { 
-                    notes.push({c:'bg-y', t:`Dolore presente ma aorta normale per altezza (AHI ${ahi.toFixed(2)}). Indagare cause extra-aortiche.`}); 
+                if (isActuallyDilated) {
+                    level = 2;
+                    notes.push({c:'bg-r', t:"URGENT: Acute pain on dilated aorta (AHI " + ahi.toFixed(2) + ")."});
+                } else {
+                    notes.push({c:'bg-y', t:"Pain with normal aorta for height. Investigate other causes."});
                 }
             }
 
-            // 2. SOGLIE CHIRURGIA PROGRAMMATA
+            // 2. CHIRURGIA PROGRAMMATA
             if (d >= 55) {
                 level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:"Indicazione Classe I: Diametro ≥ 55mm (TAV)."});
+                notes.push({c:'bg-r', t:"Diameter ≥ 55mm: Class I Indication."});
             } else if (d >= 50 && (state.valve === 'bav' || state.g1 === 'y')) {
                 level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:`Indicazione Classe I: Diametro ≥ 50mm con ${state.valve.toUpperCase()} o Sindrome Genetica.`});
+                notes.push({c:'bg-r', t:"Diameter ≥ 50mm + BAV/Genetic: Surgery recommended."});
             }
 
-            // 3. ELONGAZIONE E CRESCITA
+            // 3. LUNGHEZZA / ALLUNGAMENTO
             if (l >= 110 && d >= 40) {
-                notes.push({c:'bg-y', t:`Elongazione significativa (${l}mm): Fattore di rischio per instabilità aortica.`});
+                notes.push({c:'bg-y', t:"Significant elongation (" + l + "mm). Increased risk factor."});
             }
-            if (gr >= 5 && isDilated) {
+
+            // 4. CRESCITA
+            if (gr >= 5 && isActuallyDilated) {
                 level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:`Crescita Rapida (≥ 5mm/anno): Indicazione chirurgica elettiva.`});
+                notes.push({c:'bg-r', t:"Rapid Growth (≥ 5mm/y): Surgery indicated."});
             }
 
-            // 4. INDICE PROPORZIONALE ALTO
-            if (ahi >= 2.44) {
-                level = Math.max(level, 1);
-                notes.push({c:'bg-r', t:`AHI Critico (≥ 2.44 cm/m): Alto rischio di rottura in relazione alla taglia.`});
-            }
-
-            if (level === 0 && notes.length === 0) {
-                notes.push({c:'bg-g', t:`Dimensioni stabili e nei limiti per la corporatura (AHI ${ahi.toFixed(2)}).`});
-            }
-
+            // UI OUTPUT
             document.getElementById('out').style.display = 'block';
             const vbox = document.getElementById('vbox');
-            
             if (level === 2) {
                 vbox.className = "verdict v-urg";
-                document.getElementById('vtit').innerText = "URGENZA CHIRURGICA";
-                document.getElementById('vbod').innerText = "Quadro compatibile con Sindrome Aortica Acuta. Richiesta immediata valutazione cardiochirurgica.";
+                document.getElementById('vtit').innerText = "URGENT EVALUATION";
+                document.getElementById('vbod').innerText = "Clinical findings suggest acute aortic syndrome.";
             } else if (level === 1) {
                 vbox.className = "verdict v-prog";
-                document.getElementById('vtit').innerText = "CHIRURGIA PROGRAMMATA";
-                document.getElementById('vbod').innerText = "Il paziente rientra nei criteri per intervento elettivo. Discussione in Heart Team.";
+                document.getElementById('vtit').innerText = "PLANNED SURGERY";
+                document.getElementById('vbod').innerText = "Thresholds for elective surgery are met.";
             } else {
                 vbox.className = "verdict v-no";
-                document.getElementById('vtit').innerText = "MONITORAGGIO CLINICO";
-                document.getElementById('vbod').innerText = "Nessun criterio per chirurgia. Ottimizzare terapia medica e programmare imaging.";
+                document.getElementById('vtit').innerText = "MONITORING";
+                document.getElementById('vbod').innerText = "Dimensions within safe limits for this patient.";
             }
-
-            document.getElementById('reasons').innerHTML = notes.map(n => 
-                `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
-            ).join('');
-            
+            document.getElementById('reasons').innerHTML = notes.map(n => `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`).join('');
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
     </script>
