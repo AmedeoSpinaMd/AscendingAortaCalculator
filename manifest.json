@@ -1,0 +1,15 @@
+{
+  "short_name": "AortaCalc",
+  "name": "Aneurisma Aorta Ascendente",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f4f4",
+  "theme_color": "#1a56a8",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/822/822118.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
