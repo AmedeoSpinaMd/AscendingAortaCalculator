@@ -1,43 +1,128 @@
-<script>
-function calc() {
-    var d = parseFloat(document.getElementById('diam').value);
-    var h = parseFloat(document.getElementById('ht').value); // Altezza in cm
-    var w = parseFloat(document.getElementById('wt').value); // Peso in kg
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Aorta Calc Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<style>
+    body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111;}
+    .wrap{max-width:600px;margin:0 auto}
+    .card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px;margin-bottom:10px}
+    h1{font-size:18px;margin-bottom:5px}
+    h2{font-size:11px;text-transform:uppercase;color:#777;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:10px}
+    .row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f9f9f9}
+    input{width:70px;padding:5px;text-align:right;border:1px solid #ccc;border-radius:4px}
+    .tg{display:flex;gap:5px}
+    button{padding:6px 12px;border:1px solid #ccc;border-radius:4px;background:#f0f0f0;cursor:pointer}
+    button.on{background:#1a56a8;color:#fff;border-color:#1a56a8}
+    button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
+    .go{width:100%;padding:15px;background:#1a56a8;color:#fff;border:none;border-radius:8px;font-weight:bold;margin-top:10px}
+    #out{display:none;margin-top:15px}
+    .verdict{padding:15px;border-radius:8px;border-left:5px solid;margin-bottom:10px}
+    .v-no{background:#f0fdf4;border-color:#16a34a;color:#14532d}
+    .v-urg{background:#fef2f2;border-color:#991b1b;color:#450a0a}
+    .ri{display:flex;gap:8px;font-size:12px;margin-top:5px}
+    .dot{width:8px;height:8px;border-radius:50%;margin-top:4px}
+    .dr{background:#991b1b}.dg{background:#16a34a}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+    <h1>Ascending Aorta Calculator</h1>
     
-    if (!d) { alert("Please enter diameter"); return; }
+    <div class="card">
+        <h2>Patient Data</h2>
+        <div class="row"><span>Diameter (mm)</span><input type="number" id="diam" placeholder="39"></div>
+        <div class="row"><span>Height (cm)</span><input type="number" id="ht" placeholder="190"></div>
+    </div>
 
-    // Calcolo BSA (Formula di Mosteller)
-    var bsa = (h && w) ? Math.sqrt((h * w) / 3600) : null;
-    // Calcolo AHI (Aortic Height Index)
-    var ahi = (h) ? (d / 10) / (h / 100) : null;
+    <div class="card">
+        <h2>Symptoms & Genetics</h2>
+        <div class="row">
+            <span>Chest/Back Pain</span>
+            <div class="tg">
+                <button id="b-s1n" class="on" onclick="setS('s1','n')">No</button>
+                <button id="b-s1y" onclick="setS('s1','y')">Yes</button>
+            </div>
+        </div>
+        <div class="row">
+            <span>Syndromic (Marfan/L-D)</span>
+            <div class="tg">
+                <button id="b-g1n" class="on" onclick="setS('g1','n')">No</button>
+                <button id="b-g1y" onclick="setS('g1','y')">Yes</button>
+            </div>
+        </div>
+    </div>
 
-    var level = 0;
-    var factors = [];
+    <button class="go" onclick="calc()">Calculate</button>
 
-    // --- FILTRO DINAMICO BASATO SULL'ALTEZZA ---
-    // Se l'altezza è nota, usiamo l'indice AHI > 2.0 come "dilatata"
-    // Altrimenti usiamo il default di 40mm
-    var isDilated = false;
-    if (ahi) {
-        isDilated = (ahi >= 2.0 || d >= 40); 
+    <div id="out">
+        <div id="vbox" class="verdict">
+            <div style="font-weight:bold; font-size:16px" id="vtit"></div>
+            <div id="vbod" style="margin-top:5px"></div>
+        </div>
+        <div id="reasons"></div>
+    </div>
+</div>
+
+<script>
+let S = {s1:'n', g1:'n'};
+
+function setS(k, v) {
+    S[k] = v;
+    document.getElementById(`b-${k}n`).className = v==='n'?'on':'';
+    document.getElementById(`b-${k}y`).className = v==='y'?'on-r':'';
+}
+
+function calc() {
+    const d = parseFloat(document.getElementById('diam').value);
+    const h = parseFloat(document.getElementById('ht').value) || 175; // Default height if empty
+    if(!d) return;
+
+    const ahi = (d/10) / (h/100); // Aortic Height Index (cm/m)
+    let level = 0; // 0: No, 1: Urgent
+    let notes = [];
+
+    // --- LOGICA CLINICA RAFFINATA ---
+    // Definiamo un'aorta come "dilatata" se AHI > 2.1 (Soglia cautelativa)
+    const isActuallyDilated = (ahi > 2.1);
+
+    if (S.s1 === 'y') {
+        if (isActuallyDilated) {
+            level = 1;
+            notes.push({c:'dr', t:`Pain + Dilated Aorta (AHI ${ahi.toFixed(2)}): URGENT eval required.`});
+        } else {
+            level = 0;
+            notes.push({c:'dg', t:`Pain reported but Aorta is NORMAL for patient size (AHI ${ahi.toFixed(2)}). Look for other causes.`});
+        }
+    }
+
+    if (d >= 55) {
+        level = 1;
+        notes.push({c:'dr', t:"Diameter ≥ 55mm: Surgical indication (Class I)."});
+    }
+
+    // Display
+    document.getElementById('out').style.display = 'block';
+    const vbox = document.getElementById('vbox');
+    const vtit = document.getElementById('vtit');
+    const vbod = document.getElementById('vbod');
+    
+    if (level === 1) {
+        vbox.className = "verdict v-urg";
+        vtit.innerText = "SURGICAL EVALUATION REQUIRED";
+        vbod.innerText = "Criteria for intervention or urgent assessment met.";
     } else {
-        isDilated = (d >= 40);
+        vbox.className = "verdict v-no";
+        vtit.innerText = "NO SURGICAL INDICATION";
+        vbod.innerText = "Aorta size is within acceptable limits for this patient.";
     }
 
-    // --- LOGICA SINTOMI ---
-    if (isDilated && S.s1 === 'y') {
-        level = 3;
-        factors.push({c:'r', t:'Acute Pain on Dilated Aorta (AHI or >40mm): URGENT'});
-    } else if (!isDilated && S.s1 === 'y') {
-        factors.push({c:'a', t:'Pain reported but Aorta is size-appropriate. Check other causes.'});
-    }
-
-    // --- CRITERI INDICIZZATI (Yale/Zafar) ---
-    if (ahi >= 2.44) {
-        level = Math.max(level, 2);
-        factors.push({c:'r', t:'AHI ≥ 2.44 cm/m: Surgical threshold reached by height index'});
-    }
-
-    // ... (restante logica dei diametri fissi 50/55mm)
+    document.getElementById('reasons').innerHTML = notes.map(n => 
+        `<div class="ri"><div class="dot ${n.c}"></div><span>${n.t}</span></div>`
+    ).join('');
 }
 </script>
+</body>
+</html>
