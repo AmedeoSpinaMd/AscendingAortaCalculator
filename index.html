@@ -5,18 +5,19 @@
 <title>Aorta Ascendente — Indicazione Chirurgica</title>
 <style>
 body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:16px;font-size:14px;color:#111}
-.wrap{max-width:680px;margin:0 auto}
+.wrap{max-width:720px;margin:0 auto}
 h1{font-size:17px;margin-bottom:3px}
 .sub{font-size:12px;color:#666;margin-bottom:14px}
 .card{background:#fff;border:1px solid #ccc;border-radius:8px;padding:12px 14px;margin-bottom:10px}
 .card h2{font-size:11px;font-weight:bold;text-transform:uppercase;color:#777;letter-spacing:.5px;border-bottom:1px solid #eee;padding-bottom:5px;margin-bottom:9px;margin-top:0}
-.row{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f0f0f0;gap:8px}
+.row{display:flex;align-items:flex-start;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;gap:8px}
 .row:last-child{border-bottom:none}
-.lbl{font-size:13px;flex:1;line-height:1.4}
-small{display:block;font-size:11px;color:#888;margin-top:1px}
+.lbl{font-size:13px;flex:1;line-height:1.4;padding-top:3px}
+small{display:block;font-size:11px;color:#888;margin-top:2px;line-height:1.4}
+.note-amber{display:block;font-size:11px;color:#92400e;background:#fffbeb;border-left:3px solid #d97706;padding:3px 6px;margin-top:3px;border-radius:0 3px 3px 0}
 input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radius:4px;font-size:13px;text-align:right}
-.tg{display:flex;gap:4px;flex-shrink:0}
-.tg button{padding:4px 10px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444}
+.tg{display:flex;gap:4px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;max-width:280px}
+.tg button{padding:4px 9px;font-size:12px;border:1px solid #bbb;border-radius:4px;background:#f0f0f0;cursor:pointer;color:#444;white-space:nowrap}
 .tg button.on  {background:#1a56a8;color:#fff;border-color:#1a56a8}
 .tg button.on-a{background:#b45309;color:#fff;border-color:#b45309}
 .tg button.on-r{background:#991b1b;color:#fff;border-color:#991b1b}
@@ -50,7 +51,18 @@ input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radiu
 .refs{font-size:11px;color:#888;padding-top:7px;border-top:1px solid #eee;margin-top:4px;line-height:1.6}
 .disc{font-size:11px;color:#999;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid #eee;line-height:1.5}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:540px){.grid2{grid-template-columns:1fr}.idx3{grid-template-columns:1fr 1fr}}
+.driver-box{background:#f0f4ff;border:1px solid #b0c0e8;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;line-height:1.6;display:none}
+.driver-box strong{font-size:13px}
+.strow{display:grid;grid-template-columns:160px 90px 1fr;gap:8px;padding:5px 0;border-bottom:1px solid #eee;font-size:12px;align-items:start}
+.strow:last-child{border-bottom:none}
+.strow .stn{font-weight:bold;color:#333;line-height:1.3}
+.strow .stv{text-align:center;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:bold;white-space:nowrap}
+.stv-si  {background:#fee2e2;color:#7f1d1d}
+.stv-no  {background:#dcfce7;color:#166534}
+.stv-disc{background:#fef3c7;color:#92400e}
+.stv-nd  {background:#e5e7eb;color:#374151}
+.strow .stx{color:#555;line-height:1.4}
+@media(max-width:580px){.grid2{grid-template-columns:1fr}.idx3{grid-template-columns:1fr 1fr}.tg{max-width:100%}}
 </style>
 </head>
 <body>
@@ -58,7 +70,7 @@ input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radiu
 
 <h1>Aneurisma Aorta Ascendente</h1>
 <p class="sub">Indicazione chirurgica &mdash; ACC/AHA 2022 &middot; ESC 2014 &middot; Yale algorithm (Saeyeldin 2019)<br>
-Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze residue.</p>
+Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze.</p>
 
 <div class="grid2">
 <div>
@@ -103,7 +115,7 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 </div>
 
 <div class="card">
-<h2>Valvola aortica</h2>
+<h2>Valvola aortica &mdash; morfologia</h2>
 <div class="row">
   <div class="lbl">Morfologia valvolare</div>
   <div class="tg">
@@ -112,23 +124,47 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
     <button id="b-vunk" onclick="setV('unk')">Ignoto</button>
   </div>
 </div>
-<div id="bav-rows" style="display:none">
-  <div class="row">
-    <div class="lbl">Fenotipo BAV <span class="opt-tag">opz.</span><small>root = dilataz. seni di Valsalva prevalente</small></div>
-    <div class="tg">
-      <button id="b-fasc"  onclick="setF('asc')">Ascending</button>
-      <button id="b-froot" onclick="setF('root')">Root</button>
-      <button id="b-funk"  onclick="setF('unk')">Ignoto</button>
-    </div>
+<div id="bav-fen-row" style="display:none" class="row">
+  <div class="lbl">Fenotipo BAV <span class="opt-tag">opz.</span><small>root = dilataz. seni di Valsalva prevalente</small></div>
+  <div class="tg">
+    <button id="b-fasc"  onclick="setF('asc')">Ascending</button>
+    <button id="b-froot" onclick="setF('root')">Root</button>
+    <button id="b-funk"  onclick="setF('unk')">Ignoto</button>
   </div>
-  <div class="row">
-    <div class="lbl">Disfunzione valvolare BAV <span class="opt-tag">opz.</span></div>
-    <div class="tg">
-      <button id="b-bdno"  onclick="setD('no')">No</button>
-      <button id="b-bdas"  onclick="setD('as')">AS</button>
-      <button id="b-bdar"  onclick="setD('ar')">AR sev.</button>
-      <button id="b-bdunk" onclick="setD('unk')">Ignoto</button>
-    </div>
+</div>
+</div>
+
+<div class="card">
+<h2>Valvola aortica &mdash; disfunzione</h2>
+<p style="font-size:11px;color:#666;margin:0 0 8px">
+  Grado di disfunzione in accordo con le linee guida echocardiografiche (ASE/ESC).<br>
+  <strong>Stenosi aortica (AS):</strong> lieve = Vmax 2&ndash;3 m/s, AVA &gt;1.5 cm&sup2; &mdash; moderata = Vmax 3&ndash;4 m/s, AVA 1.0&ndash;1.5 cm&sup2; &mdash; severa = Vmax &gt;4 m/s, AVA &lt;1.0 cm&sup2;<br>
+  <strong>Insufficienza aortica (AR):</strong> moderata = vena contracta 3&ndash;6 mm, ERO 10&ndash;29 mm&sup2; &mdash; severa = vena contracta &gt;6 mm, ERO &ge;30 mm&sup2;
+</p>
+<div class="row">
+  <div class="lbl">Stenosi aortica (AS)
+    <small>Lieve (Vmax 2&ndash;3 m/s, AVA &gt;1.5 cm&sup2;): irrilevante per soglie aortiche<br>
+    Moderata (Vmax 3&ndash;4 m/s, AVA 1.0&ndash;1.5 cm&sup2;): informativa &mdash; non abbassa soglia aortica<br>
+    Severa (Vmax &gt;4 m/s, AVA &lt;1.0 cm&sup2;): indica AVR &rarr; cost-free opportunity per aorta &ge;45 mm</small>
+  </div>
+  <div class="tg">
+    <button id="b-asno"  onclick="setAS('no')">Assente/Lieve</button>
+    <button id="b-asmod" onclick="setAS('mod')">Moderata</button>
+    <button id="b-assev" onclick="setAS('sev')">Severa</button>
+    <button id="b-asunk" onclick="setAS('unk')">Ignoto</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Insufficienza aortica (AR)
+    <small>Lieve: irrilevante per soglie aortiche<br>
+    Moderata (VC 3&ndash;6 mm, ERO 10&ndash;29 mm&sup2;): informativa &mdash; non abbassa soglia aortica; se si opera l'aorta, sostituzione valvolare concomitante ragionevole (IIb)<br>
+    Severa (VC &gt;6 mm, ERO &ge;30 mm&sup2;): indica AVR &rarr; cost-free opportunity per aorta &ge;45 mm; in BAV &egrave; anche fattore aggravante per soglia 45&ndash;50 mm</small>
+  </div>
+  <div class="tg">
+    <button id="b-arno"  onclick="setAR('no')">Assente/Lieve</button>
+    <button id="b-armod" onclick="setAR('mod')">Moderata</button>
+    <button id="b-arsev" onclick="setAR('sev')">Severa</button>
+    <button id="b-arunk" onclick="setAR('unk')">Ignoto</button>
   </div>
 </div>
 </div>
@@ -139,7 +175,9 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 <div class="card">
 <h2>Sintomi</h2>
 <div class="row">
-  <div class="lbl">Dolore toracico o dorsale</div>
+  <div class="lbl">Dolore toracico o dorsale
+    <small>Attribuibile all'aneurisma solo se diametro &ge;40 mm</small>
+  </div>
   <div class="tg">
     <button id="b-s1n" onclick="set3('s1','n')">No</button>
     <button id="b-s1y" onclick="set3('s1','y')">Si'</button>
@@ -147,7 +185,9 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
   </div>
 </div>
 <div class="row">
-  <div class="lbl">Disfagia / raucedine / disfonia</div>
+  <div class="lbl">Disfagia / raucedine / disfonia
+    <small>Compressione meccanica: attribuibile solo se diametro &ge;40 mm</small>
+  </div>
   <div class="tg">
     <button id="b-s2n" onclick="set3('s2','n')">No</button>
     <button id="b-s2y" onclick="set3('s2','y')">Si'</button>
@@ -155,7 +195,9 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
   </div>
 </div>
 <div class="row">
-  <div class="lbl">Dispnea da compressione tracheale</div>
+  <div class="lbl">Dispnea da compressione tracheale
+    <small>Attribuibile solo se diametro &ge;40 mm</small>
+  </div>
   <div class="tg">
     <button id="b-s3n" onclick="set3('s3','n')">No</button>
     <button id="b-s3y" onclick="set3('s3','y')">Si'</button>
@@ -201,13 +243,15 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 </div>
 
 <div class="card">
-<h2>Contesto clinico</h2>
+<h2>Chirurgia cardiaca non aortica pianificata</h2>
+<p style="font-size:11px;color:#666;margin:0 0 8px">
+  <strong>Scenario B "cost-free opportunity" per cause NON valvolari aortiche:</strong><br>
+  CABG, sostituzione valvola mitrale/tricuspide, ablazione, bypass, ecc.<br>
+  &rarr; Se aorta &ge;45 mm: sostituzione aortica concomitante ragionevole (IIa).<br>
+  <span style="color:#92400e"><strong>Nota:</strong> la sostituzione valvolare aortica (per AS o AR severa) e' gestita dalla sezione "Disfunzione valvolare" sopra (campo AS/AR severa = Scenario A). Non inserirla qui.</span>
+</p>
 <div class="row">
-  <div class="lbl">Chirurgia cardiaca gia' pianificata
-    <small>Include: CABG, sostituz. valvolare aortica (TAV e BAV), mitralica, ecc.<br>
-    Abbassa la soglia per sostituzione aortica concomitante a 45 mm (cost-free opportunity, IIa).<br>
-    <span style="color:#b45309">Nota: la sostituzione valvolare aortica in BAV rientra in questo campo; non serve voce separata.</span></small>
-  </div>
+  <div class="lbl">CABG, sostituzione valvola mitrale/tricuspide, o altra chirurgia cardiaca non aortica gia' pianificata</div>
   <div class="tg">
     <button id="b-c1n" onclick="set3('c1','n')">No</button>
     <button id="b-c1y" onclick="set3('c1','y')">Si'</button>
@@ -230,7 +274,10 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 <button class="go" onclick="calc()">Calcola raccomandazione</button>
 
 <div id="out">
-  <div class="idx3" style="margin-top:14px">
+  <!-- box driver primario -->
+  <div class="driver-box" id="driverbox"></div>
+
+  <div class="idx3" style="margin-top:10px">
     <div class="ibox"><div class="ilbl">AHI (cm/m)</div><div class="ival" id="v-ahi">n/a</div><div class="icls" id="c-ahi"></div></div>
     <div class="ibox"><div class="ilbl">ASI (cm/m2)</div><div class="ival" id="v-asi">n/a</div><div class="icls" id="c-asi"></div></div>
     <div class="ibox"><div class="ilbl">IAA (cm2/m)</div><div class="ival" id="v-iaa">n/a</div><div class="icls" id="c-iaa"></div></div>
@@ -245,6 +292,13 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
     <div id="flist"></div>
   </div>
   <div class="refs" id="refbox"></div>
+
+  <!-- per-study breakdown -->
+  <div class="reasons" id="study-box" style="display:none">
+    <div class="rh">Indicazione per studio / linea guida</div>
+    <div id="study-list"></div>
+  </div>
+
   <div class="disc">
     Strumento di supporto clinico &mdash; non sostituisce il team aortico multidisciplinare.<br>
     ACC/AHA 2022 &middot; ESC 2014 &middot; Yale Algorithm (Saeyeldin 2019) &middot; Zafar 2018 &middot; Davies 2006 &middot; Svensson 2003
@@ -255,7 +309,8 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 
 <script>
 var S = {
-  valve:'tav', fen:'n', bd:'no',
+  valve:'tav', fen:'n',
+  as:'no', ar:'no',
   s1:'n', s2:'n', s3:'n',
   g1:'n', g2:'n', g3:'n', g4:'n',
   c1:'n', c2:'n'
@@ -271,7 +326,7 @@ function setV(v) {
   hi('b-tav',  v === 'tav' ? 'on'   : '');
   hi('b-bav',  v === 'bav' ? 'on-a' : '');
   hi('b-vunk', v === 'unk' ? 'on'   : '');
-  document.getElementById('bav-rows').style.display = (v === 'bav') ? 'block' : 'none';
+  document.getElementById('bav-fen-row').style.display = (v === 'bav') ? 'flex' : 'none';
 }
 
 function setF(v) {
@@ -281,12 +336,20 @@ function setF(v) {
   hi('b-funk',  v === 'unk'  ? 'on'   : '');
 }
 
-function setD(v) {
-  S.bd = v;
-  hi('b-bdno',  v === 'no'  ? 'on'   : '');
-  hi('b-bdas',  v === 'as'  ? 'on-a' : '');
-  hi('b-bdar',  v === 'ar'  ? 'on-r' : '');
-  hi('b-bdunk', v === 'unk' ? 'on'   : '');
+function setAS(v) {
+  S.as = v;
+  hi('b-asno',  v === 'no'  ? 'on'   : '');
+  hi('b-asmod', v === 'mod' ? 'on-a' : '');
+  hi('b-assev', v === 'sev' ? 'on-r' : '');
+  hi('b-asunk', v === 'unk' ? 'on'   : '');
+}
+
+function setAR(v) {
+  S.ar = v;
+  hi('b-arno',  v === 'no'  ? 'on'   : '');
+  hi('b-armod', v === 'mod' ? 'on-a' : '');
+  hi('b-arsev', v === 'sev' ? 'on-r' : '');
+  hi('b-arunk', v === 'unk' ? 'on'   : '');
 }
 
 function set3(k, v) {
@@ -317,22 +380,16 @@ function calc() {
   if (!diamRaw) { alert('Inserire il diametro aortico.'); return; }
 
   var diam = parseFloat(diamRaw);
-  var htEl = document.getElementById('ht').value;
-  var wtEl = document.getElementById('wt').value;
-  var grEl = document.getElementById('gr').value;
-  var lnEl = document.getElementById('len').value;
-
-  var h   = htEl ? parseFloat(htEl) : null;
-  var w   = wtEl ? parseFloat(wtEl) : null;
-  var gr  = grEl ? parseFloat(grEl) : null;
-  var len = lnEl ? parseFloat(lnEl) : null;
+  var h   = document.getElementById('ht').value  ? parseFloat(document.getElementById('ht').value)  : null;
+  var w   = document.getElementById('wt').value  ? parseFloat(document.getElementById('wt').value)  : null;
+  var gr  = document.getElementById('gr').value  ? parseFloat(document.getElementById('gr').value)  : null;
+  var len = document.getElementById('len').value ? parseFloat(document.getElementById('len').value) : null;
 
   var dc = diam / 10;
   var r  = dc / 2;
 
   /* indici morfologici */
   var ahi = null, iaa = null, asiVal = null;
-
   if (h) {
     var hm = h / 100;
     ahi = Math.round(dc / hm * 100) / 100;
@@ -350,7 +407,6 @@ function calc() {
     document.getElementById('v-iaa').textContent = 'n/a';
     document.getElementById('c-iaa').innerHTML   = '<small>altezza mancante</small>';
   }
-
   if (h && w) {
     asiVal = Math.round(dc / bsaFn(h, w) * 100) / 100;
     var asc = asiCls(asiVal);
@@ -358,7 +414,7 @@ function calc() {
     document.getElementById('c-asi').innerHTML   = '<span class="badge ' + asc.c + '">' + asc.l + '</span> ' + asc.p;
   } else {
     document.getElementById('v-asi').textContent = 'n/a';
-    document.getElementById('c-asi').innerHTML   = '<small>altezza/peso mancante</small>';
+    document.getElementById('c-asi').innerHTML   = '<small>peso/altezza mancante</small>';
   }
 
   /* elongazione */
@@ -372,16 +428,31 @@ function calc() {
       + (h ? ' &mdash; L/h = ' + lhStr : '')
       + ' &mdash; '
       + (elongated ? '<span class="badge bs">Elongata &ge;13 cm</span>' : '<span class="badge bok">Nei limiti</span>')
-      + '<br><small style="color:#555">Soglia: &gt;13 cm assoluta &mdash; ACC/AHA 2022 IIb (Shirali 2020)</small>';
+      + '<br><small style="color:#555">Soglia: &gt;13 cm &mdash; ACC/AHA 2022 IIb (Shirali 2020)</small>';
   } else {
     ebox.style.display = 'none';
   }
 
-  /* logica clinica */
+  /* ===== logica clinica ===== */
   var BAV    = (S.valve === 'bav');
   var vUnk   = (S.valve === 'unk');
   var syn    = (S.g1 === 'y' || S.g2 === 'y' || S.g3 === 'y');
   var synUnk = (S.g1 === 'u' || S.g2 === 'u' || S.g3 === 'u');
+
+  /* disfunzione valvolare */
+  var asSev  = (S.as === 'sev');
+  var asMod  = (S.as === 'mod');
+  var arSev  = (S.ar === 'sev');
+  var arMod  = (S.ar === 'mod');
+  var valvSev = (asSev || arSev);   /* indicazione valvolare primaria autonoma */
+  var valvMod = (asMod || arMod);   /* concomitante opportunistico se si opera per aorta */
+
+  /* driver primario: valvola vs aorta */
+  /* valvola driver se AS/AR severa  → paziente va in sala per la valvola
+     in quel caso, se aorta >=45mm → sostituzione aortica concomitante (cost-free)
+     aorta driver se diametro raggiunge soglie → se valvola mod/sev → sostituzione concomitante */
+  var valvDriver  = valvSev;   /* valvola come ragione primaria di entrata in sala */
+  var aortaDriver = false;     /* determinato dalla logica sottostante */
 
   var factors   = [];
   var refs      = {};
@@ -402,94 +473,183 @@ function calc() {
     factors.push({ col: 'b', txt: 'Dato mancante: ' + txt, ref: '' });
   }
 
-  /* sintomi */
-  if (S.s1 === 'y') { add(3, 'r', 'Dolore toracico/dorsale &mdash; indicazione urgente (I-C)', 'ACC/AHA 2022 I-C'); }
-  if (S.s1 === 'u') { unc('dolore toracico ignoto &mdash; se presente indica urgenza chirurgica'); }
-  if (S.s2 === 'y' || S.s3 === 'y') { add(2, 'r', 'Sintomi compressivi (disfagia/raucedine/dispnea) &mdash; indicazione indipendente dal diametro (I-C)', 'ACC/AHA 2022 I-C'); }
-  if (S.s2 === 'u' || S.s3 === 'u') { unc('sintomi compressivi ignoti &mdash; verificare disfagia, raucedine, dispnea'); }
+  /* ---- SINTOMI (solo se dilatazione significativa) ---- */
+  if (S.s1 === 'y') {
+    if (dc >= 4.5) {
+      add(3, 'r', 'Dolore toracico/dorsale + diametro &ge;45 mm &mdash; attribuibile all\'aneurisma; indicazione urgente (I-C)', 'ACC/AHA 2022 I-C');
+    } else if (dc >= 4.0) {
+      add(2, 'r', 'Dolore toracico/dorsale + diametro 40&ndash;45 mm &mdash; possibile attribuibilita\'; indicazione elettiva da discutere', 'ACC/AHA 2022');
+    } else {
+      info('b', 'Dolore toracico/dorsale presente ma diametro ' + diam + ' mm &lt;40 mm &mdash; improbabile attribuibilita\' all\'aneurisma; escludere altre cause (coronarica, muscoloscheletrica, aortica acuta)');
+    }
+  }
+  if (S.s1 === 'u' && dc >= 4.0) { unc('stato del dolore toracico ignoto &mdash; se presente con diametro &ge;45 mm indica urgenza chirurgica'); }
 
-  /* diametro TAV sporadico */
-  if (!BAV && !syn) {
+  if (S.s2 === 'y' || S.s3 === 'y') {
+    if (dc >= 4.5) {
+      add(2, 'r', 'Sintomi compressivi (disfagia/raucedine/dispnea) + diametro &ge;45 mm &mdash; attribuibili a compressione da aneurisma; indicazione chirurgica (I-C)', 'ACC/AHA 2022 I-C');
+    } else if (dc >= 4.0) {
+      add(1, 'a', 'Sintomi compressivi + diametro 40&ndash;45 mm &mdash; attribuibilita\' possibile; discutere con team aortico', 'ACC/AHA 2022');
+    } else {
+      info('b', 'Sintomi compressivi presenti ma diametro ' + diam + ' mm &lt;40 mm &mdash; improbabile compressione meccanica da aneurisma; escludere altre cause');
+    }
+  }
+  if ((S.s2 === 'u' || S.s3 === 'u') && dc >= 4.0) { unc('sintomi compressivi ignoti &mdash; verificare disfagia, raucedine, dispnea se diametro &ge;45 mm'); }
+
+  /* ---- SCENARIO A: VALVOLA come driver primario (AS/AR severa) ---- */
+  /* Il paziente va in sala per la valvola.
+     L'aorta ascendente viene trattata concomitantemente se >=45mm (cost-free opportunity). */
+  if (valvDriver) {
+    var valvDesc = asSev ? 'AS severa' : 'AR severa';
+    info('r', valvDesc + ' &mdash; indicazione primaria alla sostituzione valvolare aortica (I-A). '
+      + 'Scenario: valvola = driver primario; aorta ascendente = trattamento eventualmente concomitante.', 'ACC/AHA 2022 I-A');
+    if (dc >= 4.5) {
+      add(2, 'r', 'SCENARIO A &mdash; DRIVER VALVOLA: ' + valvDesc + ' + diametro ' + diam + ' mm &ge;45 mm &mdash; sostituzione aortica concomitante raccomandata durante AVR (cost-free opportunity, IIa-B)', 'ACC/AHA 2022 IIa-B');
+      aortaDriver = false;
+    } else if (dc >= 4.0) {
+      var bavNote = BAV ? ' In BAV considerare soglia &ge;40 mm (IIb).' : '';
+      add(1, 'a', 'SCENARIO A &mdash; DRIVER VALVOLA: ' + valvDesc + ' + diametro ' + diam + ' mm 40&ndash;45 mm &mdash; sostituzione aortica concomitante da valutare (IIb) durante AVR pianificata.' + bavNote, 'ACC/AHA 2022 IIb');
+    } else {
+      info('g', 'SCENARIO A &mdash; DRIVER VALVOLA: ' + valvDesc + ' &mdash; diametro ' + diam + ' mm &lt;40 mm; sostituzione aortica concomitante non indicata durante AVR');
+    }
+  }
+
+  /* ---- SCENARIO B: AORTA come driver primario ---- */
+  /* Soglie per indicazione aortica primaria. Se l'aorta raggiunge la soglia,
+     si valuta se la valvola (mod/sev) debba essere trattata concomitantemente. */
+
+  /* TAV sporadico */
+  if (!BAV && !syn && !valvDriver) {
     if (dc >= 5.5) {
-      add(2, 'r', 'Diametro ' + diam + ' mm &ge;55 mm &mdash; indicazione classe I (TAV sporadico)', 'ACC/AHA 2022 I-B');
+      aortaDriver = true;
+      add(2, 'r', 'DRIVER AORTA: diametro ' + diam + ' mm &ge;55 mm &mdash; indicazione classe I (TAV sporadico)', 'ACC/AHA 2022 I-B');
     } else if (dc >= 5.0) {
-      add(1, 'a', 'Diametro ' + diam + ' mm 50&ndash;55 mm &mdash; chirurgia ragionevole in centri esperti (IIa-B)', 'ACC/AHA 2022 IIa-B');
+      aortaDriver = true;
+      add(1, 'a', 'DRIVER AORTA: diametro ' + diam + ' mm 50&ndash;55 mm &mdash; chirurgia ragionevole in centri esperti (IIa-B)', 'ACC/AHA 2022 IIa-B');
     }
     if (vUnk && dc >= 5.0) { unc('morfologia valvolare ignota: se BAV, soglia scende a 50 mm (I-B)'); }
     if (synUnk && dc >= 4.5) { unc('stato genetico ignoto: se sindromico, soglia scende a 45 mm (I-C)'); }
   }
 
+  /* TAV sporadico con valvola driver (AS/AR severa): gia' gestito sopra */
+  /* TAV sporadico con valvola non-driver ma AS/AR severa gia' coperta */
+
   /* BAV */
-  if (BAV) {
+  if (BAV && !valvDriver) {
     if (dc >= 5.0) {
-      add(2, 'r', 'BAV + diametro ' + diam + ' mm &ge;50 mm &mdash; indicazione classe I', 'ACC/AHA 2022 I-B');
+      aortaDriver = true;
+      add(2, 'r', 'DRIVER AORTA: BAV + diametro ' + diam + ' mm &ge;50 mm &mdash; indicazione classe I', 'ACC/AHA 2022 I-B');
     } else if (dc >= 4.5) {
-      var aggr    = (S.bd === 'ar' || S.fen === 'root' || S.g4 === 'y' || S.c1 === 'y');
-      var aggrUnk = (S.bd === 'unk' || S.fen === 'unk' || S.g4 === 'u' || S.c1 === 'u');
+      /* Fattori che abbassano soglia BAV a 45mm (ACC/AHA IIa-B): root, storia fam, AR sev, AS sev.
+         AS/AR moderata NON abbassa la soglia; e' informativa. */
+      var aggr    = (S.fen === 'root' || S.g4 === 'y' || arSev || asSev);
+      var aggrUnk = (S.fen === 'unk' || S.g4 === 'u');
       if (aggr) {
-        add(2, 'r', 'BAV + diametro 45&ndash;50 mm + fattore aggravante (AR severa / fenotipo root / storia familiare / chirurgia cardiaca pianificata) &mdash; IIa-B', 'ACC/AHA 2022 IIa-B');
+        aortaDriver = true;
+        var ad = [];
+        if (S.fen === 'root') { ad.push('fenotipo root'); }
+        if (S.g4  === 'y')   { ad.push('storia familiare'); }
+        if (arSev)           { ad.push('AR severa'); }
+        if (asSev)           { ad.push('AS severa'); }
+        add(2, 'r', 'DRIVER AORTA: BAV + diametro 45&ndash;50 mm + fattore aggravante (' + ad.join(' / ') + ') &mdash; IIa-B', 'ACC/AHA 2022 IIa-B');
       } else if (aggrUnk) {
-        add(1, 'a', 'BAV + diametro &ge;45 mm &mdash; fattori aggravanti parzialmente ignoti; discussione multidisciplinare raccomandata', 'ACC/AHA 2022');
-        unc('fattori aggravanti BAV non tutti noti (fenotipo, disfunzione, storia familiare, chirurgia pianificata)');
+        add(1, 'a', 'DRIVER AORTA: BAV + diametro &ge;45 mm &mdash; fattori aggravanti parzialmente ignoti; team aortico', 'ACC/AHA 2022');
+        unc('alcuni fattori aggravanti BAV non noti (fenotipo, storia familiare)');
       } else {
-        add(1, 'a', 'BAV + diametro &ge;45 mm &mdash; nessun fattore aggravante; valutare in follow-up ravvicinato', 'ACC/AHA 2022');
+        add(1, 'a', 'DRIVER AORTA: BAV + diametro &ge;45 mm senza fattori aggravanti &mdash; follow-up ravvicinato', 'ACC/AHA 2022');
       }
+      if (asMod && !asSev) { info('a', 'AS moderata su BAV: non abbassa la soglia aortica, ma indica progressione valvolare; rivalutare entro 6&ndash;12 mesi'); }
+      if (arMod && !arSev) { info('a', 'AR moderata su BAV: non abbassa la soglia aortica; monitorare progressione'); }
     }
   }
 
-  /* genetica */
+  /* Genetica */
   if (S.g1 === 'y') {
-    if (dc >= 5.0) { add(2, 'r', 'Marfan + diametro &ge;50 mm &mdash; indicazione chirurgica (I-C)', 'ACC/AHA 2022 I-C'); }
-    else if (dc >= 4.5) { add(1, 'a', 'Marfan + diametro 45&ndash;50 mm &mdash; chirurgia ragionevole (IIa)', 'ACC/AHA 2022 IIa'); }
+    if (dc >= 5.0) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: Marfan + diametro &ge;50 mm (I-C)', 'ACC/AHA 2022 I-C'); }
+    else if (dc >= 4.5) { aortaDriver = true; add(1, 'a', 'DRIVER AORTA: Marfan + diametro 45&ndash;50 mm &mdash; chirurgia ragionevole (IIa)', 'ACC/AHA 2022 IIa'); }
   }
-  if (S.g2 === 'y' && dc >= 4.5) { add(2, 'r', 'Loeys-Dietz / EDS vascolare + &ge;45 mm &mdash; soglia ribassata (I-C)', 'ACC/AHA 2022 I-C'); }
-  if (S.g3 === 'y' && dc >= 4.5) { add(2, 'r', 'HTAD non-sindromica + &ge;45 mm &mdash; (I-C)', 'ACC/AHA 2022 I-C'); }
+  if (S.g2 === 'y' && dc >= 4.5) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: Loeys-Dietz/EDS vascolare + &ge;45 mm (I-C)', 'ACC/AHA 2022 I-C'); }
+  if (S.g3 === 'y' && dc >= 4.5) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: HTAD non-sindromica + &ge;45 mm (I-C)', 'ACC/AHA 2022 I-C'); }
 
-  /* crescita */
+  /* Crescita */
   if (gr !== null) {
     var gTh = (syn || BAV) ? 3 : 5;
     if (gr >= gTh) {
-      add(2, 'r', 'Crescita rapida: ' + gr + ' mm/anno &ge; soglia ' + gTh + ' mm/anno ' + (BAV || syn ? '(BAV/sindromico)' : '(sporadico)') + ' &mdash; classe I', 'ACC/AHA 2022 I-C');
+      aortaDriver = true;
+      add(2, 'r', 'DRIVER AORTA: crescita rapida ' + gr + ' mm/anno &ge; soglia ' + gTh + ' mm/anno ' + (BAV || syn ? '(BAV/sindromico)' : '(sporadico)') + ' (I-C)', 'ACC/AHA 2022 I-C');
     }
   } else {
-    unc('velocita\' di crescita non disponibile &mdash; eseguire esame seriale a 6 mesi se non recente');
+    unc('velocita\' di crescita non disponibile &mdash; eseguire esame seriale a 6 mesi');
   }
 
-  /* indici */
-  if (ahi !== null && ahi >= 3.21)     { add(1, 'a', 'AHI = ' + ahi.toFixed(2) + ' cm/m &ge;3.21 &mdash; classe Alto rischio (Zafar 2018; IIb)', 'Zafar 2018'); }
-  if (iaa !== null && iaa >= 10)       { add(1, 'a', 'IAA = ' + iaa.toFixed(1) + ' cm2/m &ge;10 &mdash; Svensson; IIb', 'Svensson 2003'); }
-  if (asiVal !== null && asiVal >= 3.0){ add(1, 'a', 'ASI = ' + asiVal.toFixed(2) + ' cm/m2 &ge;3.00 &mdash; classe Alto rischio (Davies 2006)', 'Davies 2006'); }
+  /* ---- Valvola concomitante quando AORTA e' driver ---- */
+  if (aortaDriver) {
+    if (valvSev) {
+      info('r', 'Aorta = driver primario + ' + (asSev ? 'AS severa' : 'AR severa') + ' &mdash; sostituzione valvolare aortica concomitante raccomandata durante chirurgia aortica (IIa)', 'ACC/AHA 2022 IIa');
+    } else if (valvMod) {
+      info('a', 'Aorta = driver primario + ' + (asMod ? 'AS moderata' : 'AR moderata') + ' &mdash; sostituzione valvolare concomitante ragionevole durante chirurgia aortica (IIb); decisione individualizzata', 'ACC/AHA 2022 IIb');
+    }
+  }
 
-  /* informativi */
+  /* ---- Chirurgia cardiaca NON aortica pianificata (CABG, mitrale...) ---- */
+  if (S.c1 === 'y' && dc >= 4.5) {
+    add(1, 'b', 'Chirurgia cardiaca non aortica pianificata (CABG/mitrale/ecc.) + diametro &ge;45 mm &mdash; sostituzione aortica concomitante raccomandata (cost-free opportunity, IIa)', 'ACC/AHA 2022 IIa');
+  }
+  if (S.c1 === 'u' && dc >= 4.5) { unc('altra chirurgia cardiaca ignota &mdash; se pianificata con diametro &ge;45 mm, sostituzione aortica concomitante e\' ragionevole (IIa)'); }
+
+  /* ---- Indici morfologici ---- */
+  if (ahi !== null && ahi >= 3.21)      { add(1, 'a', 'AHI = ' + ahi.toFixed(2) + ' cm/m &ge;3.21 &mdash; classe Alto rischio (Zafar 2018; IIb)', 'Zafar 2018'); }
+  if (iaa !== null && iaa >= 10)        { add(1, 'a', 'IAA = ' + iaa.toFixed(1) + ' cm2/m &ge;10 &mdash; Svensson; IIb', 'Svensson 2003'); }
+  if (asiVal !== null && asiVal >= 3.0) { add(1, 'a', 'ASI = ' + asiVal.toFixed(2) + ' cm/m2 &ge;3.00 &mdash; Alto rischio (Davies 2006)', 'Davies 2006'); }
+
+  /* ---- Fattori informativi ---- */
   if (S.fen === 'root') { info('a', 'Fenotipo root BAV &mdash; forma piu\' maligna, progressione rapida', 'Verma 2004'); }
-  if (S.bd  === 'ar')   { info('a', 'AR severa su BAV &mdash; rischio di dissezione superiore alla stenosi', 'Verma 2004'); }
-  if (S.g4  === 'y')    { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2014'); }
-  if (elongated)         { info('b', 'Elongazione aortica &ge;13 cm &mdash; predittore indipendente di dissezione (Shirali 2020; IIb)', 'Shirali 2020'); }
-  if (S.c1 === 'y' && dc >= 4.5) { info('b', 'Chirurgia cardiaca pianificata + &ge;45 mm &mdash; sostituzione concomitante raccomandata (IIa)', 'ACC/AHA 2022 IIa'); }
-  if (S.c2 === 'y')     { info('a', 'Ipertensione non controllata &mdash; aumenta wall stress; ottimizzare beta-bloccanti +/- ARBs'); }
+  if (S.ar === 'sev' && BAV) { info('a', 'AR severa su BAV &mdash; fenotipo a rischio di dissezione superiore alla stenosi (Verma 2004)', 'Verma 2004'); }
+  if (S.g4  === 'y') { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2014'); }
+  if (elongated)     { info('b', 'Elongazione aortica &ge;13 cm &mdash; predittore indipendente di dissezione (Shirali 2020; IIb)', 'Shirali 2020'); }
+  if (S.c2  === 'y') { info('a', 'Ipertensione non controllata &mdash; aumenta wall stress; ottimizzare beta-bloccanti +/- ARBs'); }
 
   if (factors.length === 0) {
-    info('g', 'Nessun criterio identificato. Follow-up con imaging seriale ogni 6-12 mesi; ottimizzare terapia medica.');
+    info('g', 'Nessun criterio identificato. Follow-up con imaging seriale ogni 6&ndash;12 mesi; ottimizzare terapia medica.');
   }
 
-  /* verdetto */
+  /* ---- Box driver primario ---- */
+  var dbox = document.getElementById('driverbox');
+  if (valvDriver && aortaDriver) {
+    dbox.style.display = 'block';
+    dbox.innerHTML = '<strong>Driver: ENTRAMBI (Scenario A+B)</strong> &mdash; La valvola (AS/AR severa) e l\'aorta (diametro) soddisfano indipendentemente i criteri chirurgici. Entrambe le sostituzioni sono indicate nella stessa seduta.';
+  } else if (valvDriver) {
+    dbox.style.display = 'block';
+    dbox.innerHTML = '<strong>Driver primario: VALVOLA AORTICA (Scenario A)</strong><br>'
+      + 'Indicazione primaria = AS/AR severa &rarr; sostituzione valvolare aortica.<br>'
+      + 'L\'aorta ascendente viene trattata <em>concomitantemente e incidentalmente</em> se il diametro raggiunge la soglia (&ge;45 mm IIa, 40&ndash;45 mm IIb).';
+  } else if (aortaDriver) {
+    dbox.style.display = 'block';
+    dbox.innerHTML = '<strong>Driver primario: AORTA ASCENDENTE (Scenario B)</strong><br>'
+      + 'Indicazione primaria = diametro aortico &rarr; sostituzione aorta ascendente.<br>'
+      + 'La valvola viene trattata <em>concomitantemente e incidentalmente</em> se la disfunzione e\' moderata (IIb) o severa (IIa).';
+  } else {
+    dbox.style.display = 'none';
+  }
+
+  /* ---- Verdetto ---- */
   var uncNote = uncertain
-    ? '<br><br><em>Attenzione: alcuni dati sono mancanti (vedere sopra). Raccogliere queste informazioni potrebbe modificare la raccomandazione.</em>'
+    ? '<br><br><em>Attenzione: alcuni dati mancanti (vedere sopra). Completare la valutazione potrebbe modificare la raccomandazione.</em>'
     : '';
 
   var verdicts = [
     { cls:'v-no',
       tit:'Indicazione chirurgica: NO',
-      bod:'Nessun criterio maggiore soddisfatto con i dati disponibili. Terapia medica e follow-up imaging seriale (TC/RM ogni 6-12 mesi). Target: PA &lt;130/80 mmHg, FC &lt;60 bpm.' + uncNote },
+      bod:'Nessun criterio maggiore soddisfatto. Terapia medica e follow-up imaging seriale (TC/RM ogni 6&ndash;12 mesi). Target: PA &lt;130/80 mmHg, FC &lt;60 bpm.' + uncNote },
     { cls:'v-disc',
       tit:'Indicazione chirurgica: DA DISCUTERE',
-      bod:'Uno o piu\' fattori aggravanti o indici morfologici elevati presenti. Discussione con team aortico multidisciplinare raccomandata prima di decidere.' + uncNote },
+      bod:'Uno o piu\' fattori aggravanti o indici morfologici elevati. Discussione con team aortico multidisciplinare raccomandata.' + uncNote },
     { cls:'v-si',
       tit:'Indicazione chirurgica: SI\'',
-      bod:'Almeno un criterio maggiore soddisfatto. Chirurgia elettiva raccomandata. Evitare sforzi fisici e manovra di Valsalva. Riferire a centro con team aortico dedicato (>=50 sostituzioni/anno).' + uncNote },
+      bod:'Almeno un criterio maggiore soddisfatto. Chirurgia elettiva raccomandata. Evitare sforzi fisici e manovra di Valsalva. Centro con team aortico dedicato (&ge;50 sostituzioni/anno).' + uncNote },
     { cls:'v-urg',
       tit:'Indicazione chirurgica: URGENTE',
-      bod:'Sintomi presenti o criteri multipli ad alto rischio. Ricovero e valutazione urgente. Restrizione assoluta attivita\' fisica. Monitoraggio continuo pressione arteriosa.' }
+      bod:'Sintomi attribuibili all\'aneurisma (diametro &ge;45 mm) o criteri multipli ad alto rischio. Ricovero urgente. Restrizione assoluta attivita\' fisica. Monitoraggio continuo PA.' }
   ];
 
   var vd   = verdicts[level];
@@ -515,6 +675,171 @@ function calc() {
     ? '<strong>Riferimenti:</strong> ' + refArr.join(' &middot; ')
     : '';
 
+  /* ===== PER-STUDY BREAKDOWN ===== */
+  /* Ogni studio/linea guida valuta indipendentemente, con il proprio criterio.
+     Esito: SI (rosso) / NO (verde) / DA DISCUTERE (giallo) / N.D. (grigio = dati insufficienti) */
+
+  var studies = [];
+
+  /* helper: aggiunge una riga studio */
+  function st(name, year, type, verdict, expl) {
+    /* verdict: 'si'|'no'|'disc'|'nd' */
+    studies.push({ name:name, year:year, type:type, verdict:verdict, expl:expl });
+  }
+
+  /* ---------- ACC/AHA 2022 ---------- */
+  (function() {
+    var v, e;
+    if (S.s1 === 'y' && dc >= 4.5) {
+      v='si'; e='Sintomi (dolore toracico) + diametro &ge;45 mm &rarr; indicazione urgente (I-C).';
+    } else if ((S.s2==='y'||S.s3==='y') && dc>=4.5) {
+      v='si'; e='Sintomi compressivi + diametro &ge;45 mm &rarr; indicazione (I-C).';
+    } else if (valvSev && dc>=4.5) {
+      v='si'; e=(asSev?'AS':'AR')+' severa (driver primario) + diametro &ge;45 mm &rarr; sostituzione aortica concomitante (IIa-B).';
+    } else if (valvSev && dc>=4.0 && dc<4.5) {
+      v='disc'; e=(asSev?'AS':'AR')+' severa + diametro 40&ndash;45 mm &rarr; sostituzione concomitante da valutare (IIb).';
+    } else if (!BAV && !syn && dc>=5.5) {
+      v='si'; e='TAV sporadico, diametro &ge;55 mm &rarr; classe I (I-B).';
+    } else if (!BAV && !syn && dc>=5.0) {
+      v='disc'; e='TAV sporadico, diametro 50&ndash;55 mm &rarr; ragionevole in centri esperti (IIa-B).';
+    } else if (BAV && dc>=5.0) {
+      v='si'; e='BAV + diametro &ge;50 mm &rarr; classe I (I-B).';
+    } else if (BAV && dc>=4.5 && (S.fen==='root'||S.g4==='y'||arSev||asSev)) {
+      v='si'; e='BAV + 45&ndash;50 mm + fattore aggravante &rarr; (IIa-B).';
+    } else if (BAV && dc>=4.5) {
+      v='disc'; e='BAV + diametro &ge;45 mm senza fattori aggravanti &rarr; da valutare caso per caso.';
+    } else if (S.g1==='y' && dc>=5.0) {
+      v='si'; e='Marfan + &ge;50 mm &rarr; (I-C).';
+    } else if (S.g1==='y' && dc>=4.5) {
+      v='disc'; e='Marfan + 45&ndash;50 mm &rarr; ragionevole (IIa).';
+    } else if ((S.g2==='y'||S.g3==='y') && dc>=4.5) {
+      v='si'; e='Connettivopatie (LDS/EDS/HTAD) + &ge;45 mm &rarr; (I-C).';
+    } else if (gr!==null && gr>=(syn||BAV?3:5)) {
+      v='si'; e='Crescita rapida (&ge;'+(syn||BAV?3:5)+' mm/anno) &rarr; (I-C).';
+    } else if (S.c1==='y' && dc>=4.5) {
+      v='disc'; e='Chirurgia cardiaca pianificata + &ge;45 mm &rarr; sostituzione concomitante ragionevole (IIa, cost-free opportunity).';
+    } else if (dc<4.0) {
+      v='no'; e='Diametro '+diam+' mm &lt;40 mm &rarr; nessun criterio soddisfatto; follow-up.';
+    } else {
+      v='no'; e='Nessun criterio maggiore soddisfatto con i dati inseriti.';
+    }
+    st('ACC/AHA Aortic Disease Guidelines','2022','Linea guida',v,e);
+  })();
+
+  /* ---------- ESC 2014 ---------- */
+  (function() {
+    var v, e;
+    if (!BAV && !syn && dc>=5.5) {
+      v='si'; e='Aorta ascendente &ge;55 mm (sporadica) &rarr; classe I.';
+    } else if (!BAV && !syn && dc>=5.0) {
+      v='disc'; e='50&ndash;55 mm: chirurgia considerata in centri esperti o se coesistono altri fattori.';
+    } else if (BAV && dc>=5.0) {
+      v='si'; e='BAV + &ge;50 mm &rarr; classe I (ESC 2014).';
+    } else if (BAV && dc>=4.5 && (S.g4==='y'||S.fen==='root'||arSev)) {
+      v='si'; e='BAV + 45&ndash;50 mm + fattore aggravante (storia fam/root/AR sev) &rarr; chirurgia indicata.';
+    } else if (S.g1==='y' && dc>=4.5) {
+      v='si'; e='Marfan + &ge;45 mm &rarr; classe I (ESC 2014).';
+    } else if ((S.g2==='y'||S.g3==='y') && dc>=4.5) {
+      v='si'; e='Connettivopatie + &ge;45 mm &rarr; chirurgia indicata.';
+    } else if (valvSev && dc>=4.5) {
+      v='si'; e=(asSev?'AS':'AR')+' severa + &ge;45 mm &rarr; sostituzione concomitante durante AVR.';
+    } else if (dc<4.0) {
+      v='no'; e='Diametro &lt;40 mm &rarr; follow-up medico.';
+    } else {
+      v='no'; e='Nessun criterio ESC 2014 soddisfatto.';
+    }
+    st('ESC Guidelines on Aortic Disease','2014','Linea guida',v,e);
+  })();
+
+  /* ---------- Yale Algorithm (Saeyeldin 2019) ---------- */
+  (function() {
+    var v, e;
+    if (S.s1==='y' && dc>=4.5) {
+      v='si'; e='Sintomi + &ge;45 mm &rarr; indicazione urgente (Yale algorithm).';
+    } else if (dc>=5.0) {
+      v='si'; e='Diametro &ge;50 mm &rarr; chirurgia raccomandata (Yale: soglia 50 mm come standard).';
+    } else if (dc>=4.5 && (BAV||(S.g4==='y')||(syn)||(gr!==null&&gr>=5)||valvSev||elongated)) {
+      v='si'; e='Diametro 45&ndash;50 mm + almeno un fattore aggravante &rarr; chirurgia indicata (Yale multiparametric algorithm).';
+    } else if (dc>=4.5) {
+      v='disc'; e='Diametro 45&ndash;50 mm senza fattori aggravanti chiari &rarr; discussione multidisciplinare (Yale algorithm).';
+    } else if (dc>=4.0 && (BAV||syn||(gr!==null&&gr>=3))) {
+      v='disc'; e='Diametro 40&ndash;45 mm con fattori di rischio &rarr; sorveglianza ravvicinata; rivalutare.';
+    } else {
+      v='no'; e='Criteri Yale non soddisfatti. Follow-up seriale.';
+    }
+    st('Yale Multiparametric Algorithm','2019 (Saeyeldin et al., JTCVS)','Score multiparametrico',v,e);
+  })();
+
+  /* ---------- Zafar 2018 — AHI ---------- */
+  (function() {
+    if (ahi === null) {
+      st('Zafar et al. — AHI','2018 (JTCVS)','Indice morfologico (altezza)','nd','Altezza non inserita &rarr; AHI non calcolabile.');
+      return;
+    }
+    var v, e;
+    if (ahi >= 4.10) {
+      v='si'; e='AHI = '+ahi.toFixed(2)+' cm/m &ge;4.10 &rarr; classe Severa, rischio annuo ~18%; chirurgia raccomandata.';
+    } else if (ahi >= 3.21) {
+      v='si'; e='AHI = '+ahi.toFixed(2)+' cm/m 3.21&ndash;4.09 &rarr; classe Alta, rischio ~12%; indicazione chirurgica.';
+    } else if (ahi >= 2.44) {
+      v='disc'; e='AHI = '+ahi.toFixed(2)+' cm/m 2.44&ndash;3.20 &rarr; classe Moderata, rischio ~7%; follow-up ravvicinato; chirurgia da discutere con altri fattori.';
+    } else {
+      v='no'; e='AHI = '+ahi.toFixed(2)+' cm/m &le;2.43 &rarr; classe Bassa, rischio ~4%; follow-up standard.';
+    }
+    st('Zafar et al. — Aortic Height Index (AHI)','2018 (JTCVS, Yale, n=780)','Indice morfologico (altezza)',v,e);
+  })();
+
+  /* ---------- Davies 2006 — ASI ---------- */
+  (function() {
+    if (asiVal === null) {
+      st('Davies et al. — ASI','2006 (Ann Thorac Surg)','Indice morfologico (BSA)','nd','Altezza e/o peso non inseriti &rarr; ASI non calcolabile.');
+      return;
+    }
+    var v, e;
+    if (asiVal >= 4.00) {
+      v='si'; e='ASI = '+asiVal.toFixed(2)+' cm/m&sup2; &ge;4.00 &rarr; classe Severa, rischio ~18%; chirurgia raccomandata.';
+    } else if (asiVal >= 3.00) {
+      v='si'; e='ASI = '+asiVal.toFixed(2)+' cm/m&sup2; 3.00&ndash;3.99 &rarr; classe Alta, rischio ~12%; indicazione chirurgica.';
+    } else if (asiVal >= 2.08) {
+      v='disc'; e='ASI = '+asiVal.toFixed(2)+' cm/m&sup2; 2.08&ndash;2.99 &rarr; classe Moderata, rischio ~7%; follow-up; discutere chirurgia se altri fattori presenti.';
+    } else {
+      v='no'; e='ASI = '+asiVal.toFixed(2)+' cm/m&sup2; &le;2.07 &rarr; classe Bassa, rischio ~4%; follow-up standard.';
+    }
+    st('Davies et al. — Aortic Size Index (ASI)','2006 (Ann Thorac Surg, Yale, n=805)','Indice morfologico (BSA)',v,e);
+  })();
+
+  /* ---------- Svensson 2003 — IAA ---------- */
+  (function() {
+    if (iaa === null) {
+      st('Svensson et al. — IAA','2002-2003 (Cleveland Clinic)','Indice morfologico (area/altezza)','nd','Altezza non inserita &rarr; IAA non calcolabile.');
+      return;
+    }
+    var v, e;
+    if (iaa >= 10) {
+      v='si'; e='IAA = '+iaa.toFixed(1)+' cm&sup2;/m &ge;10 &rarr; indice anormale; chirurgia indicata (Svensson; confermato ACC/AHA 2022 IIb).';
+    } else {
+      v='no'; e='IAA = '+iaa.toFixed(1)+' cm&sup2;/m &lt;10 &rarr; indice nei limiti; nessuna indicazione da questo parametro.';
+    }
+    st('Svensson et al. — Indexed Aortic Area (IAA)','2003 (JTCVS, Cleveland Clinic)','Indice morfologico (area/altezza)',v,e);
+  })();
+
+  /* ---------- Render tabella studi ---------- */
+  var verdMap = { si:'SI\'', no:'NO', disc:'DA DISCUTERE', nd:'N.D.' };
+  var clsMap  = { si:'stv-si', no:'stv-no', disc:'stv-disc', nd:'stv-nd' };
+  var sHtml = '';
+  sHtml += '<div class="strow" style="font-size:11px;color:#888;padding-bottom:3px">'
+    + '<div>Studio / Linea guida</div><div style="text-align:center">Indicaz.</div><div>Motivazione</div></div>';
+  for (var si = 0; si < studies.length; si++) {
+    var ss = studies[si];
+    sHtml += '<div class="strow">'
+      + '<div><div class="stn">' + ss.name + '</div><div style="font-size:10px;color:#888;margin-top:2px">' + ss.year + '</div><div style="font-size:10px;color:#aaa">' + ss.type + '</div></div>'
+      + '<div><span class="stv ' + clsMap[ss.verdict] + '">' + verdMap[ss.verdict] + '</span></div>'
+      + '<div class="stx">' + ss.expl + '</div>'
+      + '</div>';
+  }
+  document.getElementById('study-list').innerHTML = sHtml;
+  document.getElementById('study-box').style.display = 'block';
+
   var out = document.getElementById('out');
   out.style.display = 'block';
   out.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -522,13 +847,12 @@ function calc() {
 
 /* precompilazione al caricamento */
 window.onload = function() {
-  hi('b-tav', 'on');
+  hi('b-tav',  'on');
+  hi('b-asno', 'on');
+  hi('b-arno', 'on');
   var keys = ['s1','s2','s3','g1','g2','g3','g4','c1','c2'];
-  for (var i = 0; i < keys.length; i++) {
-    hi('b-' + keys[i] + 'n', 'on');
-  }
+  for (var i = 0; i < keys.length; i++) { hi('b-' + keys[i] + 'n', 'on'); }
   hi('b-fasc', 'on');
-  hi('b-bdno', 'on');
 };
 </script>
 
