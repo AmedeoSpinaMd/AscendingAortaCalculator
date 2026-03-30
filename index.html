@@ -51,6 +51,12 @@ input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radiu
 .refs{font-size:11px;color:#888;padding-top:7px;border-top:1px solid #eee;margin-top:4px;line-height:1.6}
 .disc{font-size:11px;color:#999;text-align:center;margin-top:8px;padding-top:8px;border-top:1px solid #eee;line-height:1.5}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* riga verticale per campi con descrizioni lunghe */
+.row-v{padding:7px 0;border-bottom:1px solid #f0f0f0}
+.row-v:last-child{border-bottom:none}
+.row-v .rv-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}
+.row-v .rv-lbl{font-size:13px;font-weight:bold;color:#222}
+.row-v .rv-desc{font-size:11px;color:#888;line-height:1.5;padding:4px 8px;background:#f9f9f9;border-left:3px solid #e5e7eb;border-radius:0 4px 4px 0}
 .driver-box{background:#f0f4ff;border:1px solid #b0c0e8;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:12px;line-height:1.6;display:none}
 .driver-box strong{font-size:13px}
 .strow{display:grid;grid-template-columns:160px 90px 1fr;gap:8px;padding:5px 0;border-bottom:1px solid #eee;font-size:12px;align-items:start}
@@ -136,37 +142,41 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 
 <div class="card">
 <h2>Valvola aortica &mdash; disfunzione</h2>
-<p style="font-size:11px;color:#666;margin:0 0 8px">
-  Grado di disfunzione in accordo con le linee guida echocardiografiche (ASE/ESC).<br>
-  <strong>Stenosi aortica (AS):</strong> lieve = Vmax 2&ndash;3 m/s, AVA &gt;1.5 cm&sup2; &mdash; moderata = Vmax 3&ndash;4 m/s, AVA 1.0&ndash;1.5 cm&sup2; &mdash; severa = Vmax &gt;4 m/s, AVA &lt;1.0 cm&sup2;<br>
-  <strong>Insufficienza aortica (AR):</strong> moderata = vena contracta 3&ndash;6 mm, ERO 10&ndash;29 mm&sup2; &mdash; severa = vena contracta &gt;6 mm, ERO &ge;30 mm&sup2;
-</p>
-<div class="row">
-  <div class="lbl">Stenosi aortica (AS)
-    <small>Lieve (Vmax 2&ndash;3 m/s, AVA &gt;1.5 cm&sup2;): irrilevante per soglie aortiche<br>
-    Moderata (Vmax 3&ndash;4 m/s, AVA 1.0&ndash;1.5 cm&sup2;): informativa &mdash; non abbassa soglia aortica<br>
-    Severa (Vmax &gt;4 m/s, AVA &lt;1.0 cm&sup2;): indica AVR &rarr; cost-free opportunity per aorta &ge;45 mm</small>
+
+<div class="row-v">
+  <div class="rv-top">
+    <span class="rv-lbl">Stenosi aortica (AS)</span>
+    <div class="tg">
+      <button id="b-asno"  onclick="setAS('no')">Assente/Lieve</button>
+      <button id="b-asmod" onclick="setAS('mod')">Moderata</button>
+      <button id="b-assev" onclick="setAS('sev')">Severa</button>
+      <button id="b-asunk" onclick="setAS('unk')">Ignoto</button>
+    </div>
   </div>
-  <div class="tg">
-    <button id="b-asno"  onclick="setAS('no')">Assente/Lieve</button>
-    <button id="b-asmod" onclick="setAS('mod')">Moderata</button>
-    <button id="b-assev" onclick="setAS('sev')">Severa</button>
-    <button id="b-asunk" onclick="setAS('unk')">Ignoto</button>
-  </div>
-</div>
-<div class="row">
-  <div class="lbl">Insufficienza aortica (AR)
-    <small>Lieve: irrilevante per soglie aortiche<br>
-    Moderata (VC 3&ndash;6 mm, ERO 10&ndash;29 mm&sup2;): informativa &mdash; non abbassa soglia aortica; se si opera l'aorta, sostituzione valvolare concomitante ragionevole (IIb)<br>
-    Severa (VC &gt;6 mm, ERO &ge;30 mm&sup2;): indica AVR &rarr; cost-free opportunity per aorta &ge;45 mm; in BAV &egrave; anche fattore aggravante per soglia 45&ndash;50 mm</small>
-  </div>
-  <div class="tg">
-    <button id="b-arno"  onclick="setAR('no')">Assente/Lieve</button>
-    <button id="b-armod" onclick="setAR('mod')">Moderata</button>
-    <button id="b-arsev" onclick="setAR('sev')">Severa</button>
-    <button id="b-arunk" onclick="setAR('unk')">Ignoto</button>
+  <div class="rv-desc">
+    <strong>Assente/Lieve</strong> (Vmax &lt;3 m/s, AVA &gt;1.5 cm&sup2;) &mdash; nessun impatto sulla soglia aortica &nbsp;&middot;&nbsp;
+    <strong>Moderata</strong> (Vmax 3&ndash;4 m/s, AVA 1.0&ndash;1.5 cm&sup2;) &mdash; non abbassa la soglia aortica; se si opera per aorta, sostituzione valvolare concomitante ragionevole (IIb) &nbsp;&middot;&nbsp;
+    <strong>Severa</strong> (Vmax &gt;4 m/s, AVA &lt;1.0 cm&sup2;) &mdash; indicazione valvolare autonoma (I-A) &rarr; diventa driver primario; sostituzione aortica concomitante se &ge;45 mm (IIa)
   </div>
 </div>
+
+<div class="row-v">
+  <div class="rv-top">
+    <span class="rv-lbl">Insufficienza aortica (AR)</span>
+    <div class="tg">
+      <button id="b-arno"  onclick="setAR('no')">Assente/Lieve</button>
+      <button id="b-armod" onclick="setAR('mod')">Moderata</button>
+      <button id="b-arsev" onclick="setAR('sev')">Severa</button>
+      <button id="b-arunk" onclick="setAR('unk')">Ignoto</button>
+    </div>
+  </div>
+  <div class="rv-desc">
+    <strong>Assente/Lieve</strong> &mdash; nessun impatto sulla soglia aortica &nbsp;&middot;&nbsp;
+    <strong>Moderata</strong> (VC 3&ndash;6 mm, ERO 10&ndash;29 mm&sup2;) &mdash; non abbassa la soglia aortica; se si opera per aorta, sostituzione concomitante ragionevole (IIb) &nbsp;&middot;&nbsp;
+    <strong>Severa</strong> (VC &gt;6 mm, ERO &ge;30 mm&sup2;) &mdash; indicazione valvolare autonoma (I-A) &rarr; driver primario; sostituzione aortica concomitante se &ge;45 mm (IIa); in BAV &egrave; anche fattore aggravante indipendente per soglia 45&ndash;50 mm
+  </div>
+</div>
+
 </div>
 
 </div>
@@ -244,20 +254,22 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 
 <div class="card">
 <h2>Chirurgia cardiaca non aortica pianificata</h2>
-<p style="font-size:11px;color:#666;margin:0 0 8px">
-  <strong>Scenario B "cost-free opportunity" per cause NON valvolari aortiche:</strong><br>
-  CABG, sostituzione valvola mitrale/tricuspide, ablazione, bypass, ecc.<br>
-  &rarr; Se aorta &ge;45 mm: sostituzione aortica concomitante ragionevole (IIa).<br>
-  <span style="color:#92400e"><strong>Nota:</strong> la sostituzione valvolare aortica (per AS o AR severa) e' gestita dalla sezione "Disfunzione valvolare" sopra (campo AS/AR severa = Scenario A). Non inserirla qui.</span>
-</p>
-<div class="row">
-  <div class="lbl">CABG, sostituzione valvola mitrale/tricuspide, o altra chirurgia cardiaca non aortica gia' pianificata</div>
-  <div class="tg">
-    <button id="b-c1n" onclick="set3('c1','n')">No</button>
-    <button id="b-c1y" onclick="set3('c1','y')">Si'</button>
-    <button id="b-c1u" onclick="set3('c1','u')">Ignoto</button>
+
+<div class="row-v">
+  <div class="rv-top">
+    <span class="rv-lbl">CABG, sostituz. mitrale/tricuspide, altra chir. cardiaca</span>
+    <div class="tg">
+      <button id="b-c1n" onclick="set3('c1','n')">No</button>
+      <button id="b-c1y" onclick="set3('c1','y')">Si'</button>
+      <button id="b-c1u" onclick="set3('c1','u')">Ignoto</button>
+    </div>
+  </div>
+  <div class="rv-desc">
+    <strong>Cost-free opportunity:</strong> se il paziente entra in sala per queste cause e l'aorta ascendente &egrave; &ge;45 mm, la sostituzione aortica concomitante &egrave; ragionevole (IIa). &nbsp;&middot;&nbsp;
+    <span style="color:#92400e"><strong>Non includere qui</strong> la sostituzione valvolare aortica per AS/AR severa, che &egrave; gestita sopra nella sezione "Disfunzione" come Scenario A.</span>
   </div>
 </div>
+
 <div class="row">
   <div class="lbl">Ipertensione non controllata in terapia</div>
   <div class="tg">
