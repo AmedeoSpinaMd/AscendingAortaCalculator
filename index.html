@@ -75,7 +75,7 @@ input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radiu
 <div class="wrap">
 
 <h1>Aneurisma Aorta Ascendente</h1>
-<p class="sub">Indicazione chirurgica &mdash; ACC/AHA 2022 &middot; ESC 2014 &middot; Yale algorithm (Saeyeldin 2019)<br>
+<p class="sub">Indicazione chirurgica &mdash; ACC/AHA 2022 &middot; ESC 2024 &middot; Yale algorithm (Saeyeldin 2019)<br>
 Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze.</p>
 
 <div class="grid2">
@@ -313,7 +313,7 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 
   <div class="disc">
     Strumento di supporto clinico &mdash; non sostituisce il team aortico multidisciplinare.<br>
-    ACC/AHA 2022 &middot; ESC 2014 &middot; Yale Algorithm (Saeyeldin 2019) &middot; Zafar 2018 &middot; Davies 2006 &middot; Svensson 2003
+    ACC/AHA 2022 &middot; ESC 2024 &middot; Yale Algorithm (Saeyeldin 2019) &middot; Zafar 2018 &middot; Davies 2006 &middot; Svensson 2003
   </div>
 </div>
 
@@ -617,7 +617,7 @@ function calc() {
   /* ---- Fattori informativi ---- */
   if (S.fen === 'root') { info('a', 'Fenotipo root BAV &mdash; forma piu\' maligna, progressione rapida', 'Verma 2004'); }
   if (S.ar === 'sev' && BAV) { info('a', 'AR severa su BAV &mdash; fenotipo a rischio di dissezione superiore alla stenosi (Verma 2004)', 'Verma 2004'); }
-  if (S.g4  === 'y') { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2014'); }
+  if (S.g4  === 'y') { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2024'); }
   if (elongated)     { info('b', 'Elongazione aortica &ge;13 cm &mdash; predittore indipendente di dissezione (Shirali 2020; IIb)', 'Shirali 2020'); }
   if (S.c2  === 'y') { info('a', 'Ipertensione non controllata &mdash; aumenta wall stress; ottimizzare beta-bloccanti +/- ARBs'); }
 
@@ -738,29 +738,60 @@ function calc() {
     st('ACC/AHA Aortic Disease Guidelines','2022','Linea guida',v,e);
   })();
 
-  /* ---------- ESC 2014 ---------- */
+  /* ---------- ESC 2024 ---------- */
   (function() {
+    var lowRisk = false; /* non rilevabile dal form; segnalato come nota */
     var v, e;
-    if (!BAV && !syn && dc>=5.5) {
-      v='si'; e='Aorta ascendente &ge;55 mm (sporadica) &rarr; classe I.';
+    /* Sintomi */
+    if (S.s1==='y' && dc>=4.5) {
+      v='si'; e='Sintomi attribuibili + diametro &ge;45 mm &rarr; indicazione chirurgica urgente (ESC 2024).';
+    /* TAV sporadico */
+    } else if (!BAV && !syn && dc>=5.5) {
+      v='si'; e='TAV sporadico, diametro &ge;55 mm &rarr; classe I/B (ESC 2024).';
+    } else if (!BAV && !syn && dc>5.2) {
+      v='disc'; e='TAV sporadico, diametro 52&ndash;55 mm &rarr; sostituzione da considerare in pazienti a basso rischio chirurgico (&lt;3%) (IIa/B). Valutare rischio operatorio individuale.';
     } else if (!BAV && !syn && dc>=5.0) {
-      v='disc'; e='50&ndash;55 mm: chirurgia considerata in centri esperti o se coesistono altri fattori.';
-    } else if (BAV && dc>=5.0) {
-      v='si'; e='BAV + &ge;50 mm &rarr; classe I (ESC 2014).';
-    } else if (BAV && dc>=4.5 && (S.g4==='y'||S.fen==='root'||arSev)) {
-      v='si'; e='BAV + 45&ndash;50 mm + fattore aggravante (storia fam/root/AR sev) &rarr; chirurgia indicata.';
-    } else if (S.g1==='y' && dc>=4.5) {
-      v='si'; e='Marfan + &ge;45 mm &rarr; classe I (ESC 2014).';
-    } else if ((S.g2==='y'||S.g3==='y') && dc>=4.5) {
-      v='si'; e='Connettivopatie + &ge;45 mm &rarr; chirurgia indicata.';
+      v='disc'; e='TAV sporadico, diametro 50&ndash;52 mm &rarr; nessuna indicazione standard; considerare solo se basso rischio + altri fattori. Follow-up ravvicinato.';
+    /* BAV fenotipo root */
+    } else if (BAV && S.fen==='root' && dc>5.0) {
+      v='si'; e='BAV fenotipo root + diametro &gt;50 mm &rarr; classe I/B (ESC 2024 &mdash; soglia pi&ugrave; aggressiva per il fenotipo root).';
+    } else if (BAV && S.fen==='root' && dc>=4.5) {
+      v='disc'; e='BAV fenotipo root + diametro 45&ndash;50 mm &rarr; da discutere; il fenotipo root ha progressione pi&ugrave; rapida (ESC 2024).';
+    /* BAV fenotipo ascending */
+    } else if (BAV && (S.fen==='asc'||S.fen==='n'||S.fen==='unk') && dc>=5.5) {
+      v='si'; e='BAV fenotipo ascending + diametro &ge;55 mm &rarr; classe I/B (ESC 2024).';
+    } else if (BAV && (S.fen==='asc'||S.fen==='n'||S.fen==='unk') && dc>5.2) {
+      v='disc'; e='BAV fenotipo ascending + diametro 52&ndash;55 mm &rarr; da considerare in pazienti a basso rischio chirurgico (IIa/B, ESC 2024).';
+    } else if (BAV && (S.fen==='asc'||S.fen==='n'||S.fen==='unk') && dc>5.0) {
+      /* >50 mm con fattori aggravanti ESC 2024 */
+      var escAggr = (S.g4==='y' || (gr!==null&&gr>=3) || elongated || S.c1==='y');
+      if (escAggr) {
+        v='disc'; e='BAV fenotipo ascending + diametro 50&ndash;52 mm + fattore aggravante (storia fam. / crescita &ge;3 mm/a / elongazione &gt;11 cm / chirurgia pianificata) &rarr; da considerare a basso rischio chirurgico (IIa, ESC 2024).';
+      } else {
+        v='no'; e='BAV fenotipo ascending + diametro 50&ndash;52 mm senza fattori aggravanti &rarr; follow-up; soglia non raggiunta (ESC 2024).';
+      }
+    /* Chirurgia valvolare concomitante */
     } else if (valvSev && dc>=4.5) {
-      v='si'; e=(asSev?'AS':'AR')+' severa + &ge;45 mm &rarr; sostituzione concomitante durante AVR.';
+      v='si'; e=(asSev?'AS':'AR')+' severa (driver valvolare) + diametro &ge;45 mm &rarr; sostituzione aortica concomitante in paziente a basso rischio (ESC 2024); soglia 50 mm se rischio standard.';
+    } else if (valvSev && dc>=4.0) {
+      v='disc'; e=(asSev?'AS':'AR')+' severa + diametro 40&ndash;45 mm &rarr; sostituzione concomitante da valutare caso per caso (ESC 2024).';
+    /* Genetica */
+    } else if (S.g1==='y' && dc>=4.5) {
+      v='si'; e='Marfan + &ge;45 mm &rarr; indicazione chirurgica (ESC 2024).';
+    } else if ((S.g2==='y'||S.g3==='y') && dc>=4.5) {
+      v='si'; e='Connettivopatie (LDS/EDS/HTAD) + &ge;45 mm &rarr; chirurgia indicata, soglia variante-specifica (ESC 2024).';
+    /* Crescita rapida */
+    } else if (gr!==null && gr>=(syn||BAV?3:5)) {
+      v='si'; e='Crescita rapida &rarr; indicazione chirurgica (ESC 2024).';
+    /* Elongazione */
+    } else if (elongated) {
+      v='disc'; e='Lunghezza aortica &ge;13 cm (ESC 2024 riconosce &gt;11 cm come fattore di rischio aggiuntivo) &rarr; discutere con team aortico.';
     } else if (dc<4.0) {
-      v='no'; e='Diametro &lt;40 mm &rarr; follow-up medico.';
+      v='no'; e='Diametro &lt;40 mm: nessun criterio soddisfatto. Follow-up con eco ogni 2&ndash;3 anni se BAV &gt;40 mm, ogni 1 anno se &gt;45 mm.';
     } else {
-      v='no'; e='Nessun criterio ESC 2014 soddisfatto.';
+      v='no'; e='Nessun criterio ESC 2024 soddisfatto con i dati inseriti.';
     }
-    st('ESC Guidelines on Aortic Disease','2014','Linea guida',v,e);
+    st('ESC Guidelines on Peripheral Arterial &amp; Aortic Diseases','2024 (Eur Heart J, pubbl. agosto 2024 &mdash; sostituisce ESC 2014)','Linea guida',v,e);
   })();
 
   /* ---------- Yale Algorithm (Saeyeldin 2019) ---------- */
