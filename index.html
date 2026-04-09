@@ -74,9 +74,9 @@ input[type=number]{width:78px;padding:4px 6px;border:1px solid #bbb;border-radiu
 <body>
 <div class="wrap">
 
-<h1>Aneurisma Aorta Ascendente</h1>
-<p class="sub">Indicazione chirurgica &mdash; ACC/AHA 2022 &middot; ESC 2024 &middot; Yale algorithm (Saeyeldin 2019)<br>
-Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze.</p>
+<h1>Aorta Ascendente e Radice Aortica &mdash; Indicazione Chirurgica</h1>
+<p class="sub">ACC/AHA 2022 &middot; ESC 2024 &middot; Yale algorithm (Saeyeldin 2019)<br>
+Solo il diametro del segmento pi&ugrave; dilatato &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span> possono essere omessi; la raccomandazione viene comunque prodotta segnalando le incertezze residue.</p>
 
 <div class="grid2">
 <div>
@@ -84,9 +84,23 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 <div class="card">
 <h2>Morfologia aortica</h2>
 <div class="row">
-  <div class="lbl">Diametro ascendente <small>TC/RM leading-edge &mdash; obbligatorio</small></div>
+  <div class="lbl">Sesso biologico <small>per valori normali di riferimento della radice</small></div>
+  <div class="tg">
+    <button id="b-sexm" onclick="setSex('m')">M</button>
+    <button id="b-sexf" onclick="setSex('f')">F</button>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Diametro aorta ascendente (tubo) <small>TC/RM leading-edge &mdash; obbligatorio se ascendente &egrave; il segmento principale</small></div>
   <div style="display:flex;align-items:center;gap:4px">
-    <input type="number" id="diam" placeholder="48" min="20" max="100">
+    <input type="number" id="diam" placeholder="—" min="20" max="100">
+    <span style="font-size:12px;color:#888">mm</span>
+  </div>
+</div>
+<div class="row">
+  <div class="lbl">Diametro radice aortica (seni di Valsalva) <span class="opt-tag">opz.</span><small>Norma: &lt;40 mm (M), &lt;36 mm (F). Se presente, usato come diametro principale per soglie chirurgiche in Marfan e fenotipo root</small></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <input type="number" id="root" placeholder="—" min="20" max="100">
     <span style="font-size:12px;color:#888">mm</span>
   </div>
 </div>
@@ -288,11 +302,17 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 <div id="out">
   <!-- box driver primario -->
   <div class="driver-box" id="driverbox"></div>
+  <div class="driver-box" id="rootbox" style="background:#fff0f0;border-color:#f9a8a8"></div>
 
-  <div class="idx3" style="margin-top:10px">
-    <div class="ibox"><div class="ilbl">AHI (cm/m)</div><div class="ival" id="v-ahi">n/a</div><div class="icls" id="c-ahi"></div></div>
-    <div class="ibox"><div class="ilbl">ASI (cm/m2)</div><div class="ival" id="v-asi">n/a</div><div class="icls" id="c-asi"></div></div>
-    <div class="ibox"><div class="ilbl">IAA (cm2/m)</div><div class="ival" id="v-iaa">n/a</div><div class="icls" id="c-iaa"></div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 4px">
+    <div class="ibox"><div class="ilbl">AHI &mdash; diam. max (cm/m)</div><div class="ival" id="v-ahi">n/a</div><div class="icls" id="c-ahi"></div></div>
+    <div class="ibox"><div class="ilbl">ASI &mdash; diam. max (cm/m&sup2;)</div><div class="ival" id="v-asi">n/a</div><div class="icls" id="c-asi"></div></div>
+    <div class="ibox"><div class="ilbl">IAA &mdash; diam. max (cm&sup2;/m)</div><div class="ival" id="v-iaa">n/a</div><div class="icls" id="c-iaa"></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 10px">
+    <div class="ibox"><div class="ilbl">Radice &mdash; vs norma sesso</div><div class="ival" id="v-root">n/a</div><div class="icls" id="c-root"></div></div>
+    <div class="ibox"><div class="ilbl">IAA radice (cm&sup2;/m)</div><div class="ival" id="v-iaart">n/a</div><div class="icls" id="c-iaart"><small style="color:#888">solo se SoV inserito</small></div></div>
+    <div class="ibox"><div class="ilbl">Z-score SoV (Devereux)</div><div class="ival" id="v-zsov">n/a</div><div class="icls" id="c-zsov"><small style="color:#888">necessita BSA</small></div></div>
   </div>
   <div class="ebox" id="ebox"></div>
   <div class="verdict" id="vbox">
@@ -322,6 +342,7 @@ Solo il diametro &egrave; obbligatorio. I campi <span class="opt-tag">opz.</span
 <script>
 var S = {
   valve:'tav', fen:'n',
+  sex:'m',
   as:'no', ar:'no',
   s1:'n', s2:'n', s3:'n',
   g1:'n', g2:'n', g3:'n', g4:'n',
@@ -331,6 +352,12 @@ var S = {
 function hi(id, cls) {
   var el = document.getElementById(id);
   if (el) { el.className = cls; }
+}
+
+function setSex(v) {
+  S.sex = v;
+  hi('b-sexm', v === 'm' ? 'on' : '');
+  hi('b-sexf', v === 'f' ? 'on-a' : '');
 }
 
 function setV(v) {
@@ -389,13 +416,60 @@ function asiCls(v) {
 
 function calc() {
   var diamRaw = document.getElementById('diam').value;
-  if (!diamRaw) { alert('Inserire il diametro aortico.'); return; }
+  var rootRaw = document.getElementById('root').value;
 
-  var diam = parseFloat(diamRaw);
+  if (!diamRaw && !rootRaw) { alert('Inserire almeno un diametro (aorta ascendente o radice aortica).'); return; }
+
+  /* Se inseriti entrambi, il diametro "operativo" per le soglie è il massimo */
+  var diamAsc  = diamRaw ? parseFloat(diamRaw) : null;
+  var diamRoot = rootRaw ? parseFloat(rootRaw) : null;
+  var diam = Math.max(diamAsc || 0, diamRoot || 0);  /* diametro massimo = quello che guida le soglie */
+  if (diam === 0) { alert('Inserire un valore di diametro valido.'); return; }
+
   var h   = document.getElementById('ht').value  ? parseFloat(document.getElementById('ht').value)  : null;
   var w   = document.getElementById('wt').value  ? parseFloat(document.getElementById('wt').value)  : null;
   var gr  = document.getElementById('gr').value  ? parseFloat(document.getElementById('gr').value)  : null;
   var len = document.getElementById('len').value ? parseFloat(document.getElementById('len').value) : null;
+
+  /* Determina quale segmento è predominante */
+  var rootDominant = (diamRoot !== null && (diamAsc === null || diamRoot > diamAsc));
+  var bothPresent  = (diamRoot !== null && diamAsc !== null);
+  var rootGtAsc    = (bothPresent && diamRoot > diamAsc);        /* root > tubo = fenotipo root anche in TAV */
+  var rootIsolated = (diamRoot !== null && diamAsc === null);    /* solo radice misurata */
+
+  /* Normale radice per sesso (StatPearls / ACC/AHA 2022) */
+  var rootNorm = (S.sex === 'f') ? 36 : 40;  /* mm */
+  var rootDilated = (diamRoot !== null && diamRoot >= rootNorm);
+
+  /* Radice: display e valutazione */
+  if (diamRoot !== null) {
+    var rootPct = Math.round((diamRoot / rootNorm) * 100);
+    var rootCls = (diamRoot >= 50) ? 'bbad' : (diamRoot >= rootNorm) ? 'bm' : 'bok';
+    var rootLbl = (diamRoot >= 55) ? 'Aneurisma severo' : (diamRoot >= 50) ? 'Aneurisma moderato' : (diamRoot >= rootNorm) ? 'Dilatata' : 'Normale';
+    document.getElementById('v-root').textContent = diamRoot + ' mm';
+    document.getElementById('c-root').innerHTML = '<span class="badge ' + rootCls + '">' + rootLbl + '</span><br><small>' + rootPct + '% della norma ' + (S.sex==='f'?'F':'M') + ' (' + rootNorm + ' mm)</small>';
+  } else {
+    document.getElementById('v-root').textContent = 'n/a';
+    document.getElementById('c-root').innerHTML = '<small>non inserita</small>';
+  }
+
+  /* Box radice dominante */
+  var rbox = document.getElementById('rootbox');
+  if (rootDominant && diamRoot !== null) {
+    rbox.style.display = 'block';
+    var relStr = bothPresent
+      ? (rootGtAsc ? 'Radice (' + diamRoot + ' mm) &gt; Tubo ascendente (' + diamAsc + ' mm) &rarr; <strong>fenotipo ROOT confermato</strong>.'
+                   : 'Radice (' + diamRoot + ' mm) &le; Tubo (' + diamAsc + ' mm); fenotipo ascending prevalente.')
+      : 'Solo radice aortica inserita; le soglie vengono applicate al diametro della radice.';
+    rbox.innerHTML = '<strong>Radice aortica:</strong> ' + relStr + '<br>'
+      + (rootIsolated ? '<em>Aneurisma isolato della radice: valutare sostituzione radice (Bentall o David/Ross) senza necessit&agrave; di sostituzione del tubo ascendente se questo &egrave; nei limiti.</em>' : '')
+      + (rootGtAsc ? '<br><em>Il diametro della radice supera il tubo ascendente: le soglie chirurgiche sono guidate dal diametro della radice.</em>' : '');
+  } else {
+    rbox.style.display = 'none';
+  }
+
+  /* Fenotipo effettivo: root se (a) selezionato in BAV, OPPURE (b) radice > ascendente in TAV */
+  var effectiveRoot = (S.fen === 'root') || (rootGtAsc);
 
   var dc = diam / 10;
   var r  = dc / 2;
@@ -427,6 +501,40 @@ function calc() {
   } else {
     document.getElementById('v-asi').textContent = 'n/a';
     document.getElementById('c-asi').innerHTML   = '<small>peso/altezza mancante</small>';
+  }
+
+  /* IAA radice (SoV) separato */
+  var iaart = null;
+  if (diamRoot !== null && h) {
+    var rRoot = (diamRoot / 10) / 2;
+    iaart = Math.round(Math.PI * rRoot * rRoot / (h / 100) * 10) / 10;
+    document.getElementById('v-iaart').textContent = iaart.toFixed(1);
+    document.getElementById('c-iaart').innerHTML   = iaart >= 10
+      ? '<span class="badge bbad">Anormale &ge;10</span>'
+      : '<span class="badge bok">Normale &lt;10</span>';
+  } else {
+    document.getElementById('v-iaart').textContent = 'n/a';
+    document.getElementById('c-iaart').innerHTML   = '<small>' + (diamRoot === null ? 'SoV non inserito' : 'altezza mancante') + '</small>';
+  }
+
+  /* Z-score seni di Valsalva (formula Devereux 2012 / Roman aggiornata per adulti)
+     Formula semplificata: media_SoV (cm) = 1.02 + 0.98 * sqrt(BSA); SD = 0.19 cm
+     Fonte: Devereux RB et al. Am J Cardiol 2012;110:1189-94 (Roman 1989 aggiornato)
+     Z = (misurato_cm - media) / SD
+     Z >= 2 = dilatato; Z >= 3.5 = critico (Marfan threshold diagnostico = Z > 2) */
+  var zSov = null;
+  if (diamRoot !== null && h && w) {
+    var bsaV = bsaFn(h, w);
+    var meanSoV = 1.02 + 0.98 * Math.sqrt(bsaV);  /* cm */
+    var sdSoV   = 0.19;                              /* cm, pooled adulti */
+    zSov = Math.round(((diamRoot / 10) - meanSoV) / sdSoV * 10) / 10;
+    var zCls = (zSov >= 3.5) ? 'bs' : (zSov >= 2.0) ? 'bh' : (zSov >= 1.0) ? 'bm' : 'bok';
+    var zLbl = (zSov >= 3.5) ? 'Severo &ge;3.5' : (zSov >= 2.0) ? 'Dilatato &ge;2.0' : (zSov >= 1.0) ? 'Borderline' : 'Normale';
+    document.getElementById('v-zsov').textContent = zSov.toFixed(1);
+    document.getElementById('c-zsov').innerHTML   = '<span class="badge ' + zCls + '">' + zLbl + '</span><br><small>media attesa: ' + meanSoV.toFixed(1) + ' cm</small>';
+  } else {
+    document.getElementById('v-zsov').textContent = 'n/a';
+    document.getElementById('c-zsov').innerHTML   = '<small>' + (diamRoot === null ? 'SoV non inserito' : 'h/peso mancanti') + '</small>';
   }
 
   /* elongazione */
@@ -552,14 +660,12 @@ function calc() {
       aortaDriver = true;
       add(2, 'r', 'DRIVER AORTA: BAV + diametro ' + diam + ' mm &ge;50 mm &mdash; indicazione classe I', 'ACC/AHA 2022 I-B');
     } else if (dc >= 4.5) {
-      /* Fattori che abbassano soglia BAV a 45mm (ACC/AHA IIa-B): root, storia fam, AR sev, AS sev.
-         AS/AR moderata NON abbassa la soglia; e' informativa. */
-      var aggr    = (S.fen === 'root' || S.g4 === 'y' || arSev || asSev);
+      var aggr    = (effectiveRoot || S.g4 === 'y' || arSev || asSev);
       var aggrUnk = (S.fen === 'unk' || S.g4 === 'u');
       if (aggr) {
         aortaDriver = true;
         var ad = [];
-        if (S.fen === 'root') { ad.push('fenotipo root'); }
+        if (effectiveRoot)   { ad.push(rootGtAsc ? 'fenotipo root (radice > tubo)' : 'fenotipo root selezionato'); }
         if (S.g4  === 'y')   { ad.push('storia familiare'); }
         if (arSev)           { ad.push('AR severa'); }
         if (asSev)           { ad.push('AS severa'); }
@@ -575,12 +681,35 @@ function calc() {
     }
   }
 
-  /* Genetica */
-  if (S.g1 === 'y') {
-    if (dc >= 5.0) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: Marfan + diametro &ge;50 mm (I-C)', 'ACC/AHA 2022 I-C'); }
-    else if (dc >= 4.5) { aortaDriver = true; add(1, 'a', 'DRIVER AORTA: Marfan + diametro 45&ndash;50 mm &mdash; chirurgia ragionevole (IIa)', 'ACC/AHA 2022 IIa'); }
+  /* TAV con fenotipo root (radice > tubo ascendente) */
+  if (!BAV && !syn && !valvDriver && rootGtAsc) {
+    if (dc >= 5.5) {
+      aortaDriver = true;
+      add(2, 'r', 'DRIVER AORTA: TAV + radice ' + diamRoot + ' mm &ge;55 mm &mdash; classe I; aneurisma radice isolato', 'ACC/AHA 2022 I-B');
+    } else if (dc >= 5.0) {
+      aortaDriver = true;
+      add(1, 'a', 'DRIVER AORTA: TAV + radice ' + diamRoot + ' mm 50&ndash;55 mm &mdash; radice > tubo; fenotipo root in TAV &rarr; chirurgia ragionevole (IIa)', 'ACC/AHA 2022 IIa');
+    } else if (dc >= 4.5 && S.c1 === 'y') {
+      add(1, 'a', 'TAV fenotipo root + ' + diamRoot + ' mm &ge;45 mm + chirurgia pianificata &mdash; sostituzione radice concomitante ragionevole', 'ACC/AHA 2022 IIa');
+    }
+    if (rootDilated && dc < 5.0) { info('b', 'Radice aortica dilatata (' + diamRoot + ' mm) con tubo ascendente normale o meno dilatato &mdash; monitorare entrambi i segmenti separatamente'); }
   }
-  if (S.g2 === 'y' && dc >= 4.5) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: Loeys-Dietz/EDS vascolare + &ge;45 mm (I-C)', 'ACC/AHA 2022 I-C'); }
+
+  /* Genetica — con soglie specifiche per radice */
+  if (S.g1 === 'y') {
+    /* Marfan: soglie riferite alla radice se disponibile */
+    var marfDiam = (diamRoot !== null) ? diamRoot : diam * 10;
+    var marfDc   = marfDiam / 10;
+    if (marfDc >= 5.0) {
+      aortaDriver = true;
+      add(2, 'r', 'DRIVER AORTA: Marfan + diametro ' + marfDiam + ' mm &ge;50 mm (radice o ascendente) &mdash; indicazione chirurgica (I-C)', 'ACC/AHA 2022 I-C');
+    } else if (marfDc >= 4.5) {
+      aortaDriver = true;
+      add(1, 'a', 'DRIVER AORTA: Marfan + ' + marfDiam + ' mm 45&ndash;50 mm &mdash; chirurgia ragionevole (IIa). Considerare se: storia fam. dissezione, crescita rapida, dilatazione diffusa radice+ascendente, tortuosit&agrave; arterie vertebrali', 'ACC/AHA 2022 IIa');
+    }
+    if (diamRoot !== null) { info('b', 'Marfan: monitorare separatamente radice (' + diamRoot + ' mm) e tubo ascendente (' + (diamAsc||'n/d') + ' mm) &mdash; la radice &egrave; il sito primario in Marfan; riferimento soglia su radice'); }
+  }
+  if (S.g2 === 'y' && dc >= 4.5) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: Loeys-Dietz/EDS vascolare + &ge;45 mm (I-C) &mdash; LDS: soglia radice pi&ugrave; aggressiva per rischio dissecazione a diametri minori', 'ACC/AHA 2022 I-C'); }
   if (S.g3 === 'y' && dc >= 4.5) { aortaDriver = true; add(2, 'r', 'DRIVER AORTA: HTAD non-sindromica + &ge;45 mm (I-C)', 'ACC/AHA 2022 I-C'); }
 
   /* Crescita */
@@ -611,11 +740,33 @@ function calc() {
 
   /* ---- Indici morfologici ---- */
   if (ahi !== null && ahi >= 3.21)      { add(1, 'a', 'AHI = ' + ahi.toFixed(2) + ' cm/m &ge;3.21 &mdash; classe Alto rischio (Zafar 2018; IIb)', 'Zafar 2018'); }
-  if (iaa !== null && iaa >= 10)        { add(1, 'a', 'IAA = ' + iaa.toFixed(1) + ' cm2/m &ge;10 &mdash; Svensson; IIb', 'Svensson 2003'); }
+  if (iaa !== null && iaa >= 10)        { add(1, 'a', 'IAA aorta ascendente = ' + iaa.toFixed(1) + ' cm2/m &ge;10 &mdash; Svensson; IIb', 'Svensson 2003'); }
+  if (iaart !== null && iaart >= 10)    { add(1, 'a', 'IAA radice (SoV) = ' + iaart.toFixed(1) + ' cm2/m &ge;10 &mdash; anormale; chirurgia indicata a prescindere dal diametro assoluto (Svensson 2003; IIb)', 'Svensson 2003'); }
   if (asiVal !== null && asiVal >= 3.0) { add(1, 'a', 'ASI = ' + asiVal.toFixed(2) + ' cm/m2 &ge;3.00 &mdash; Alto rischio (Davies 2006)', 'Davies 2006'); }
+  if (zSov !== null && zSov >= 2.0 && S.g1 === 'y') {
+    add(1, 'a', 'Z-score SoV = ' + zSov.toFixed(1) + ' &ge;2.0 &mdash; criterio diagnostico Marfan (Ghent 2010); dilatazione radice significativa per l\'et&agrave; e la taglia corporea', 'Ghent criteria 2010');
+  }
+  if (zSov !== null && zSov >= 2.0 && S.g1 !== 'y') {
+    info('b', 'Z-score SoV = ' + zSov.toFixed(1) + ' &ge;2.0 &mdash; radice dilatata per et&agrave; e taglia; considerare screening genetico se non gi&agrave; eseguito (Marfan, LDS, HTAD)');
+  }
+  if (zSov !== null && zSov < 2.0 && zSov >= 1.0) {
+    info('b', 'Z-score SoV = ' + zSov.toFixed(1) + ' (borderline 1.0&ndash;2.0) &mdash; monitoraggio; non diagnostico ma suggerisce follow-up ravvicinato della radice');
+  }
 
   /* ---- Fattori informativi ---- */
-  if (S.fen === 'root') { info('a', 'Fenotipo root BAV &mdash; forma piu\' maligna, progressione rapida', 'Verma 2004'); }
+  if (effectiveRoot) {
+    var rootSrc = rootGtAsc ? 'radice (' + diamRoot + ' mm) > tubo (' + diamAsc + ' mm)' : 'fenotipo root selezionato';
+    info('a', 'Fenotipo root (' + rootSrc + ') &mdash; forma pi&ugrave; maligna, progressione rapida; soglie chirurgiche pi&ugrave; conservative rispetto al fenotipo ascending', 'Verma 2004 / ESC 2024');
+  }
+  if (rootIsolated && diamRoot !== null && diamRoot < 50) {
+    info('b', 'Aneurisma isolato della radice: se tubo ascendente normale, l\'intervento (se indicato) prevede sostituzione radice (David/Bentall) senza sostituzione dell\'aorta tubulare');
+  }
+  if (bothPresent && !rootGtAsc && diamRoot >= rootNorm) {
+    info('b', 'Radice dilatata (' + diamRoot + ' mm) ma tubo ascendente prevalente (' + diamAsc + ' mm) &mdash; monitorare entrambi i segmenti; fenotipo ascending guida le soglie');
+  }
+  if (diamRoot !== null && diamRoot >= 45 && S.g1 !== 'y' && !BAV && !syn) {
+    info('a', 'Radice &ge;45 mm in TAV sporadico: rischio dissezione significativamente aumentato (Borger 2004); monitoraggio ogni 6 mesi se 45&ndash;50 mm');
+  }
   if (S.ar === 'sev' && BAV) { info('a', 'AR severa su BAV &mdash; fenotipo a rischio di dissezione superiore alla stenosi (Verma 2004)', 'Verma 2004'); }
   if (S.g4  === 'y') { info('a', 'Storia familiare &mdash; abbassa soglia chirurgica di ~5 mm (ESC/AHA)', 'ESC 2024'); }
   if (elongated)     { info('b', 'Elongazione aortica &ge;13 cm &mdash; predittore indipendente di dissezione (Shirali 2020; IIb)', 'Shirali 2020'); }
@@ -752,11 +903,11 @@ function calc() {
       v='disc'; e='TAV sporadico, diametro 52&ndash;55 mm &rarr; sostituzione da considerare in pazienti a basso rischio chirurgico (&lt;3%) (IIa/B). Valutare rischio operatorio individuale.';
     } else if (!BAV && !syn && dc>=5.0) {
       v='disc'; e='TAV sporadico, diametro 50&ndash;52 mm &rarr; nessuna indicazione standard; considerare solo se basso rischio + altri fattori. Follow-up ravvicinato.';
-    /* BAV fenotipo root */
-    } else if (BAV && S.fen==='root' && dc>5.0) {
-      v='si'; e='BAV fenotipo root + diametro &gt;50 mm &rarr; classe I/B (ESC 2024 &mdash; soglia pi&ugrave; aggressiva per il fenotipo root).';
-    } else if (BAV && S.fen==='root' && dc>=4.5) {
-      v='disc'; e='BAV fenotipo root + diametro 45&ndash;50 mm &rarr; da discutere; il fenotipo root ha progressione pi&ugrave; rapida (ESC 2024).';
+    /* BAV fenotipo root (o TAV con radice > ascendente) */
+    } else if ((BAV && effectiveRoot && dc>5.0) || (!BAV && !syn && rootGtAsc && dc>5.0)) {
+      v='si'; e='Fenotipo root + diametro &gt;50 mm &rarr; classe I/B (ESC 2024 &mdash; soglia pi&ugrave; aggressiva per il fenotipo root)' + (rootGtAsc && !BAV ? '; valido anche per TAV con radice > tubo' : '') + '.';
+    } else if ((BAV && effectiveRoot && dc>=4.5) || (!BAV && !syn && rootGtAsc && dc>=4.5)) {
+      v='disc'; e='Fenotipo root 45&ndash;50 mm &rarr; da discutere con team aortico; forma pi&ugrave; maligna (ESC 2024).';
     /* BAV fenotipo ascending */
     } else if (BAV && (S.fen==='asc'||S.fen==='n'||S.fen==='unk') && dc>=5.5) {
       v='si'; e='BAV fenotipo ascending + diametro &ge;55 mm &rarr; classe I/B (ESC 2024).';
@@ -851,19 +1002,82 @@ function calc() {
     st('Davies et al. — Aortic Size Index (ASI)','2006 (Ann Thorac Surg, Yale, n=805)','Indice morfologico (BSA)',v,e);
   })();
 
-  /* ---------- Svensson 2003 — IAA ---------- */
+  /* ---------- Svensson 2003 — IAA ascendente ---------- */
   (function() {
     if (iaa === null) {
-      st('Svensson et al. — IAA','2002-2003 (Cleveland Clinic)','Indice morfologico (area/altezza)','nd','Altezza non inserita &rarr; IAA non calcolabile.');
+      st('Svensson et al. — IAA aorta ascendente','2002-2003 (Cleveland Clinic)','Indice morfologico (area/altezza)','nd','Altezza non inserita &rarr; IAA non calcolabile.');
       return;
     }
     var v, e;
     if (iaa >= 10) {
-      v='si'; e='IAA = '+iaa.toFixed(1)+' cm&sup2;/m &ge;10 &rarr; indice anormale; chirurgia indicata (Svensson; confermato ACC/AHA 2022 IIb).';
+      v='si'; e='IAA tubo = '+iaa.toFixed(1)+' cm&sup2;/m &ge;10 &rarr; indice anormale; chirurgia indicata (Svensson; confermato ACC/AHA 2022 IIb).';
     } else {
-      v='no'; e='IAA = '+iaa.toFixed(1)+' cm&sup2;/m &lt;10 &rarr; indice nei limiti; nessuna indicazione da questo parametro.';
+      v='no'; e='IAA tubo = '+iaa.toFixed(1)+' cm&sup2;/m &lt;10 &rarr; indice nei limiti per il tubo ascendente.';
     }
-    st('Svensson et al. — Indexed Aortic Area (IAA)','2003 (JTCVS, Cleveland Clinic)','Indice morfologico (area/altezza)',v,e);
+    st('Svensson et al. — IAA aorta ascendente','2003 (JTCVS, Cleveland Clinic)','Indice morfologico (area/altezza)',v,e);
+  })();
+
+  /* ---------- Svensson 2003 — IAA radice (SoV) ---------- */
+  (function() {
+    if (iaart === null) {
+      st('Svensson et al. — IAA radice (SoV)','2003 (Cleveland Clinic)','Indice morfologico radice','nd',
+        diamRoot===null ? 'Diametro seni di Valsalva non inserito.' : 'Altezza non inserita &rarr; IAA radice non calcolabile.');
+      return;
+    }
+    var v, e;
+    if (iaart >= 10) {
+      v='si'; e='IAA radice (SoV) = '+iaart.toFixed(1)+' cm&sup2;/m &ge;10 &rarr; radice anormale; indicazione chirurgica anche se diametro assoluto &lt;50 mm (Svensson; IIb). Valido per TAV, BAV e Marfan.';
+    } else {
+      v='no'; e='IAA radice = '+iaart.toFixed(1)+' cm&sup2;/m &lt;10 &rarr; radice nella norma per taglia corporea; nessuna indicazione da questo parametro.';
+    }
+    st('Svensson et al. — IAA radice (seni di Valsalva)','2003 (Cleveland Clinic)','Indice morfologico radice',v,e);
+  })();
+
+  /* ---------- Z-score SoV — Devereux / Roman (Marfan e aortopatie genetiche) ---------- */
+  (function() {
+    if (zSov === null) {
+      var motivo = (diamRoot === null) ? 'SoV non inserito.' : 'Altezza e/o peso non inseriti (necessari per BSA).';
+      st('Z-score seni di Valsalva (Devereux 2012)','1989/2012 (Am J Cardiol)','Indice radice relativo a taglia','nd', motivo);
+      return;
+    }
+    var v, e;
+    if (zSov >= 3.5) {
+      v='si'; e='Z-score SoV = '+zSov.toFixed(1)+' &ge;3.5 &rarr; dilatazione severa; in Marfan indica intervento urgente; in qualsiasi contesto indica valutazione cardiochirurgica immediata.';
+    } else if (zSov >= 2.0) {
+      if (S.g1==='y') {
+        v='si'; e='Z-score SoV = '+zSov.toFixed(1)+' &ge;2.0 in Marfan &rarr; criterio diagnostico soddisfatto (Ghent 2010); dilatazione radice clinicamente significativa; soglia chirurgica si basa sul diametro assoluto (40&ndash;50 mm).';
+      } else if (syn) {
+        v='disc'; e='Z-score SoV = '+zSov.toFixed(1)+' &ge;2.0 in contesto sindromico &rarr; dilatazione radice significativa; discutere intervento in base alla sindrome specifica.';
+      } else {
+        v='disc'; e='Z-score SoV = '+zSov.toFixed(1)+' &ge;2.0 senza sindrome nota &rarr; radice dilatata per et&agrave;/taglia; considerare screening genetico; follow-up ravvicinato.';
+      }
+    } else if (zSov >= 1.0) {
+      v='no'; e='Z-score SoV = '+zSov.toFixed(1)+' (borderline) &rarr; radice ai limiti superiori della norma; follow-up ogni 12 mesi; screening familiare se contesto genetico sospetto.';
+    } else {
+      v='no'; e='Z-score SoV = '+zSov.toFixed(1)+' &lt;1.0 &rarr; radice nella norma per et&agrave; e taglia corporea.';
+    }
+    st('Z-score seni di Valsalva — Devereux/Roman','1989/2012 (Am J Cardiol, Marfan Foundation)','Indice radice relativo a taglia',v,e);
+  })();
+
+  /* ---------- Borger 2004 — BAV con radice 45-49 mm ---------- */
+  (function() {
+    if (!BAV) { return; }
+    var rootD = (diamRoot !== null) ? diamRoot : (S.fen==='root' ? diam : null);
+    if (rootD === null) {
+      st('Borger et al. — BAV radice 4.5–5.0 cm','2004 (follow-up 10-15 anni, n=201)','Studio BAV radice','nd','Diametro radice non disponibile; inserire SoV per valutazione specifica.');
+      return;
+    }
+    var v, e;
+    if (rootD >= 50) {
+      v='si'; e='BAV + radice ' + rootD + ' mm &ge;50 mm &rarr; rischio significativamente aumentato di aneurisma, dissezione, morte improvvisa (Borger 2004; p&lt;0.001 vs &lt;45 mm). Chirurgia indicata.';
+    } else if (rootD >= 45) {
+      v='si'; e='BAV + radice ' + rootD + ' mm 45&ndash;50 mm &rarr; rischio aumentato rispetto a &lt;45 mm (p&lt;0.001; Borger 2004). Questo studio supporta l\'intervento profilattico gi&agrave; a 45 mm in BAV con radice dilatata.';
+    } else if (rootD >= 40) {
+      v='disc'; e='BAV + radice ' + rootD + ' mm 40&ndash;45 mm &rarr; nei limiti secondo Borger 2004; monitorare ogni 12 mesi.';
+    } else {
+      v='no'; e='BAV + radice ' + rootD + ' mm &lt;40 mm &rarr; nessuna indicazione chirurgica da questo studio.';
+    }
+    st('Borger et al. — BAV con radice dilatata','2004 (JACC; n=201 BAV post-AVR, f/u 10-15 anni)','Studio storia naturale BAV',v,e);
   })();
 
   /* ---------- Render tabella studi ---------- */
@@ -896,6 +1110,7 @@ window.onload = function() {
   var keys = ['s1','s2','s3','g1','g2','g3','g4','c1','c2'];
   for (var i = 0; i < keys.length; i++) { hi('b-' + keys[i] + 'n', 'on'); }
   hi('b-fasc', 'on');
+  hi('b-sexm', 'on');
 };
 </script>
 
