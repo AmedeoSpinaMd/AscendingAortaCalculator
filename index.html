@@ -300,9 +300,11 @@ Solo il diametro del segmento pi&ugrave; dilatato &egrave; obbligatorio. I campi
 <button class="go" onclick="calc()">Calcola raccomandazione</button>
 
 <div id="out">
-  <!-- box driver primario -->
+  <!-- box driver / tipo chirurgia -->
   <div class="driver-box" id="driverbox"></div>
-  <div class="driver-box" id="rootbox" style="background:#fff0f0;border-color:#f9a8a8"></div>
+  <div id="surgbox" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;line-height:1.7"></div>
+  <div class="driver-box" id="rootbox" style="background:#fff8f0;border-color:#f9c8a8"></div>
+  <div id="measbox" style="display:none;background:#f0f4ff;border:1px solid #b0c4f8;border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;line-height:1.7"></div>
 
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 4px">
     <div class="ibox"><div class="ilbl">AHI &mdash; diam. max (cm/m)</div><div class="ival" id="v-ahi">n/a</div><div class="icls" id="c-ahi"></div></div>
@@ -776,7 +778,13 @@ function calc() {
     info('g', 'Nessun criterio identificato. Follow-up con imaging seriale ogni 6&ndash;12 mesi; ottimizzare terapia medica.');
   }
 
-  /* ---- Box driver primario ---- */
+  /* ---- Determina il segmento driver (il più dilatato decide il tipo di chirurgia) ---- */
+  /* rootSurgDriver = la radice è il segmento che richiede chirurgia
+     ascSurgDriver  = solo il tubo ascendente richiede chirurgia */
+  var rootSurgDriver = rootGtAsc || rootIsolated || (effectiveRoot && diamRoot !== null && diamRoot >= 45);
+  var ascSurgDriver  = !rootSurgDriver && (diamAsc !== null);
+
+  /* ---- Box driver primario (scenario valvola vs aorta) ---- */
   var dbox = document.getElementById('driverbox');
   if (valvDriver && aortaDriver) {
     dbox.style.display = 'block';
@@ -785,15 +793,95 @@ function calc() {
     dbox.style.display = 'block';
     dbox.innerHTML = '<strong>Driver primario: VALVOLA AORTICA (Scenario A)</strong><br>'
       + 'Indicazione primaria = AS/AR severa &rarr; sostituzione valvolare aortica.<br>'
-      + 'L\'aorta ascendente viene trattata <em>concomitantemente e incidentalmente</em> se il diametro raggiunge la soglia (&ge;45 mm IIa, 40&ndash;45 mm IIb).';
+      + 'L\'aorta viene trattata concomitantemente se raggiunge la soglia (&ge;45 mm IIa, 40&ndash;45 mm IIb).';
   } else if (aortaDriver) {
+    var segStr = rootSurgDriver
+      ? '<strong>RADICE AORTICA</strong> (SoV ' + diamRoot + ' mm &gt; tubo ' + (diamAsc||'n/d') + ' mm)'
+      : '<strong>AORTA ASCENDENTE</strong> (tubo ' + (diamAsc||diam) + ' mm)';
     dbox.style.display = 'block';
-    dbox.innerHTML = '<strong>Driver primario: AORTA ASCENDENTE (Scenario B)</strong><br>'
-      + 'Indicazione primaria = diametro aortico &rarr; sostituzione aorta ascendente.<br>'
-      + 'La valvola viene trattata <em>concomitantemente e incidentalmente</em> se la disfunzione e\' moderata (IIb) o severa (IIa).';
+    dbox.innerHTML = '<strong>Driver primario: AORTA</strong> &mdash; segmento prevalente: ' + segStr + '<br>'
+      + 'La valvola viene trattata concomitantemente se la disfunzione &egrave; moderata (IIb) o severa (IIa).';
   } else {
     dbox.style.display = 'none';
   }
+
+  /* ---- Box tipo di intervento chirurgico ---- */
+  var surgbox = document.getElementById('surgbox');
+  if (level >= 1) {
+    var rootD  = diamRoot || 0;
+    var ascD   = diamAsc  || 0;
+    var valvOK = (S.as === 'no' || S.as === 'n') && (S.ar === 'no' || S.ar === 'n');
+    var valvMod2 = valvMod;
+    var lines = [];
+
+    /* --- Tecnica chirurgica principale --- */
+    if (rootSurgDriver) {
+      /* Radice è il segmento primario */
+      lines.push('<strong style="font-size:13px">Tipo di chirurgia: RADICE AORTICA</strong>');
+
+      /* Tecniche conservative (valve-sparing) vs demolitive */
+      var conservPossible = (S.ar !== 'sev') && (S.as !== 'sev') && (S.ar !== 'mod' || true);
+      /* David (reimpianto) vs Yacoub (rimodellamento) */
+      lines.push('<br><strong>Tecniche conservative (valve-sparing root replacement):</strong>');
+      lines.push('&bull; <strong>David (reimpianto):</strong> rimozione seni di Valsalva + reimpianto valvola nativa in graft tubulare. Preferita se anello dilatato o annuloaortico. Durabilità &gt;20 anni in centri esperti. Indicata se valvola riparabile (cusps non calcifiche, prolasso correggibile). ACC/AHA IIa-B.');
+      lines.push('&bull; <strong>Yacoub (rimodellamento):</strong> sostituzione seni di Valsalva con conservazione giunzione sinotubulare. Pi&ugrave; fisiologica emodinamicamente; minor controllo sull\'anello &rarr; rischio reintervento a lungo termine. Indicata se anello non dilatato.');
+
+      if (valvSev || (S.as === 'sev') || (S.ar === 'sev')) {
+        lines.push('<br><strong>Tecnica demolitiva (Bentall de Bono):</strong>');
+        lines.push('&bull; <strong>Bentall:</strong> sostituzione radice + valvola con condotto composito (valvola meccanica o biologica) + reimpianto coronarie. Indicata se valvola non riparabile (calcificazione severa, AS severa, BAV non riparabile). Tecnica gold standard per aneurisma radice con disfunzione valvolare non correggibile.');
+      } else if (!conservPossible) {
+        lines.push('<br><strong>Valutare Bentall se</strong> anatomia non favorevole per tecnica conservativa (cusps non riparabili, calcificazioni, BAV con geometria sfavorevole).');
+      }
+
+      if (ascD >= 45 || (ascD > 0 && ascD >= rootD * 0.85)) {
+        lines.push('<br><strong>Tubo ascendente:</strong> diametro ' + (ascD||'n/d') + ' mm &mdash; se &ge;45 mm, sostituzione concomitante del tubo ascendente nella stessa seduta raccomandata (&rarr; operazione Bentall estesa o David + tubo). Se &lt;45 mm, sostituzione del solo segmento sino-tubulare &egrave; sufficiente.');
+      }
+
+    } else if (ascSurgDriver && !valvDriver) {
+      /* Solo tubo ascendente */
+      lines.push('<strong style="font-size:13px">Tipo di chirurgia: AORTA ASCENDENTE (tubo)</strong>');
+      lines.push('Sostituzione del <strong>tubo ascendente</strong> (graft tubulare in Dacron) senza necessit&agrave; di sostituzione della radice se SoV &lt;45 mm.');
+
+      if (valvSev) {
+        lines.push('<br><strong>Procedura di Wheat:</strong> sostituzione del tubo ascendente + sostituzione valvola aortica separata (valvola biologica o meccanica), conservando le coronarie native (non reimpianto). Indicata se tubo è il segmento critico e la valvola non è ancorata in una radice aneurismatica. Alternativa meno comune a Bentall.');
+      } else if (valvMod2) {
+        lines.push('<br>' + (asMod?'AS':'AR') + ' moderata: sostituzione concomitante della valvola ragionevole (IIb) se si opera per il tubo; decisione individualizzata.');
+      }
+      if (rootD >= 45) {
+        lines.push('<br><strong>Attenzione:</strong> radice ' + rootD + ' mm &ge;45 mm &rarr; rivalutare se il segmento radicolare richiede trattamento; considerare sostituzione radice concomitante.');
+      }
+
+    } else if (valvDriver) {
+      /* Solo valvola driver, aorta secondaria */
+      lines.push('<strong style="font-size:13px">Tipo di chirurgia: SOSTITUZIONE VALVOLA AORTICA (AVR)</strong>');
+      lines.push((asSev ? 'AS severa' : 'AR severa') + ' = indicazione primaria &rarr; AVR (biologica o meccanica secondo et&agrave; e preferenze).');
+      if (rootSurgDriver || rootD >= 45) {
+        lines.push('<br><strong>Radice ' + rootD + ' mm &ge;45 mm:</strong> in contesto di AVR con radice aneurismatica &rarr; Bentall (tecnica preferita) o David se valvola biologica riparabile.');
+      } else if (ascD >= 45) {
+        lines.push('<br><strong>Tubo ' + ascD + ' mm &ge;45 mm:</strong> sostituzione tubo concomitante (Wheat o Bentall a seconda della radice).');
+      }
+    }
+
+    surgbox.style.display = 'block';
+    surgbox.innerHTML = lines.join('<br>');
+  } else {
+    surgbox.style.display = 'none';
+  }
+
+  /* ---- Box tecnica di misurazione TC/RM ---- */
+  var measbox = document.getElementById('measbox');
+  measbox.style.display = 'block';
+  measbox.innerHTML = '<strong style="font-size:13px">Tecnica di misurazione della radice aortica (TC/RM)</strong><br><br>'
+    + '<strong>1. Inner Edge to Inner Edge (I-I) &mdash; bordo interno a bordo interno:</strong><br>'
+    + 'Tecnica raccomandata da ACC/AHA 2022 e dalla maggior parte delle linee guida per TC e RM con gating ECG. Misura il <em>lume interno</em> escludendo la parete. Produce valori mediamente 1&ndash;2 mm <em>inferiori</em> rispetto al metodo leading-edge. &Egrave; il metodo pi&ugrave; riproducibile su TC gated. <strong>Usare per confronti seriali su TC/RM.</strong><br><br>'
+    + '<strong>2. Leading Edge to Leading Edge (LE-LE) &mdash; bordo anteriore a bordo anteriore:</strong><br>'
+    + 'Metodo storico dell\'ecografia 2D (ASE). Misura dal bordo anteriore della parete anteriore al bordo anteriore della parete posteriore. Valori ~1&ndash;2 mm <em>superiori</em> rispetto a I-I. Standard ASE/ESC per ecografia. <strong>Usare per confronto ecografico e per Z-score (Devereux/Roman).</strong><br><br>'
+    + '<strong>3. Cusp-to-Cusp (C-C):</strong><br>'
+    + 'Misura il diametro massimo tra i lembi valvolari opposti a livello dei seni di Valsalva, su sezione assiale. Utile per BAV (asimmetria dei seni). Pu&ograve; essere significativamente diverso dall\'I-I in BAV. <strong>Preferita in BAV e per pianificazione TAVI.</strong><br><br>'
+    + '<strong>4. Cusp-to-Commissure (C-Comm):</strong><br>'
+    + 'Misura dal lembo valvolare alla commissura opposta. Utile per caratterizzare la geometria asimmetrica in BAV. Meno usata routinariamente; pi&ugrave; rilevante per chirurgia riparativa della valvola.<br><br>'
+    + '<strong style="color:#b45309">Avvertenza clinica:</strong> confrontare misure dello stesso metodo! Una radice di 45 mm su eco (LE-LE) corrisponde a circa 43&ndash;44 mm su TC (I-I). Riportare sempre il metodo utilizzato. Le soglie chirurgiche delle linee guida si riferiscono principalmente al metodo <strong>I-I su TC gated</strong> (ACC/AHA 2022) o <strong>LE-LE su eco</strong> (ASE) &mdash; attenzione alle differenze sistematiche.';
+
 
   /* ---- Verdetto ---- */
   var uncNote = uncertain
